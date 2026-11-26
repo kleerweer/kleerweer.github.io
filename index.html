@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<title>Kleerweer</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Kleerweer zegt wat je aantrekt en wanneer je laagje uit of aan kan.">
+<meta name="theme-color" content="#F4EEE4">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Kleerweer">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icons/icon-180.png">
+<link rel="icon" type="image/png" href="icons/icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bagel+Fat+One&family=Figtree:wght@500;600;700&display=swap">
+<style>
+:root{--ink:#2A2320;--cream:#FFFBF3;--oat:#F4EEE4;--pink:#EBCFC6;--olive:#DADDC3;--sand:#E9D9BF;--blue:#CBD5DA;--bord:#7A2E35;--camel:#C9965A;--green:#8A8F5A}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--oat);color:var(--ink);font-family:Figtree,system-ui,sans-serif;font-weight:500;-webkit-tap-highlight-color:transparent}
+h1,h2,h3,p{margin:0}
+button{font:inherit;color:inherit;cursor:pointer}
+.h{font-family:'Bagel Fat One','Arial Black',sans-serif;font-weight:400}
+.wrap{max-width:460px;margin:0 auto;padding:calc(14px + env(safe-area-inset-top)) 18px calc(28px + env(safe-area-inset-bottom));display:flex;flex-direction:column;gap:18px}
+.card{border:3px solid var(--ink);box-shadow:5px 5px 0 var(--ink);border-radius:26px;background:var(--cream)}
+.lab{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em}
+.top{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.brand{display:flex;align-items:center;gap:8px}
+.brand svg{width:34px;height:34px}
+.brand span{font-size:24px;line-height:1}
+.pill{border:3px solid var(--ink);border-radius:999px;background:var(--cream);padding:8px 14px;font-weight:700;font-size:14px;min-height:44px;display:inline-flex;align-items:center;gap:6px}
+.gear{width:52px;height:52px;padding:0;justify-content:center;box-shadow:3px 3px 0 var(--ink)}
+.gear svg{width:28px;height:28px}
+.pill:active,.btn:active{transform:translate(2px,2px)}
+.meta{font-size:12px;font-weight:700;padding-left:6px;margin-bottom:4px}
+.bubble{font-size:23px;line-height:1.25;font-weight:700;border-radius:22px 22px 22px 6px;padding:14px 18px;animation:rise .5s cubic-bezier(.3,1.5,.5,1) both}
+@keyframes rise{from{opacity:0;transform:translateY(14px) rotate(-2deg)}to{opacity:1;transform:none}}
+.stage{background:var(--pink);padding:12px 12px 12px 4px;display:flex;align-items:center;gap:6px;transition:background .4s;position:relative;overflow:hidden}
+  .stage svg.fig{width:40%;height:auto;flex-shrink:0;position:relative}
+.stage .side{flex:1 1 0;min-width:0;display:flex;flex-direction:column;gap:6px;position:relative}
+.wx{position:absolute;inset:0;pointer-events:none}
+.tile{border:3px solid var(--ink);border-radius:18px;background:var(--cream);padding:6px 4px 7px;display:flex;flex-direction:column;align-items:center;gap:2px;text-align:center;min-width:0}
+.tile svg{width:44px;height:44px;flex-shrink:0}
+.tile.big{align-items:flex-start;text-align:left;padding:8px 10px 10px;gap:2px;transform:rotate(1.5deg)}
+.tile.big svg{width:100%;height:92px}
+.tile .n{font-size:12px;font-weight:700;line-height:1.15}
+.tile.big .n{font-size:19px}
+.tile.off{opacity:.45}
+.tile .s{font-size:11px;font-weight:700}
+.tiles{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}
+.rowi{display:flex;gap:7px;align-items:center;border:3px solid var(--ink);border-radius:16px;background:var(--cream);padding:5px 8px 5px 5px;min-width:0}
+.rowi svg{width:36px;height:36px;flex-shrink:0}
+.rowi .n{font-size:14px;font-weight:700;line-height:1.15}
+.rowi .s{font-size:11.5px;font-weight:600;line-height:1.2;margin-top:1px}
+.rowi .nr{display:inline-flex;width:18px;height:18px;border-radius:50%;background:var(--ink);color:var(--cream);font-size:11px;font-weight:700;align-items:center;justify-content:center;margin-right:4px;vertical-align:1px}
+.rowi.big{padding:7px 9px 7px 6px}
+.rowi.big svg{width:52px;height:52px}
+.rowi.big .n{font-family:'Bagel Fat One','Arial Black',sans-serif;font-weight:400;font-size:17px}
+.rowi.off{opacity:.5}
+.skip{font-size:12px;font-weight:700;line-height:1.3;border:2.5px dashed var(--ink);border-radius:14px;padding:6px 9px}
+.pop{animation:pop .5s cubic-bezier(.3,1.6,.5,1) both;transform-box:fill-box;transform-origin:center}
+@keyframes pop{from{opacity:0;transform:translateY(-16px) scale(.88)}to{opacity:1;transform:none}}
+.tl{background:var(--sand);padding:14px 16px 16px;display:flex;flex-direction:column;gap:12px}
+.row{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.bar{position:relative;height:26px;border:3px solid var(--ink);border-radius:14px;display:flex;overflow:hidden;background:var(--cream)}
+.bar i{display:block;height:100%;border-right:3px solid var(--ink)}
+.bar i:last-child{border-right:0}
+.barwrap{position:relative;padding:8px 0}
+.barwrap input{position:absolute;left:-4px;right:-4px;top:0;width:calc(100% + 8px);height:42px;margin:0;opacity:0;cursor:pointer}
+.thumb{position:absolute;top:1px;width:40px;height:40px;margin-left:-20px;border-radius:50%;background:var(--cream);border:3px solid var(--ink);box-shadow:2px 2px 0 var(--ink);pointer-events:none;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;transition:left .15s}
+.barwrap input:focus-visible + .thumb{outline:3px solid var(--bord);outline-offset:2px}
+.ticks{display:flex;justify-content:space-between;font-size:11px;font-weight:700}
+.moms{display:flex;flex-direction:column;gap:6px}
+.mom{border:0;background:none;padding:6px 0;display:flex;align-items:center;gap:8px;font-size:15px;font-weight:700;text-align:left;min-height:32px}
+.mom b{font-family:'Bagel Fat One','Arial Black',sans-serif;font-weight:400;font-size:17px;min-width:52px}
+.dot{width:14px;height:14px;border-radius:50%;border:2.5px solid var(--ink);flex-shrink:0}
+.g3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.g2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.sc{border:3px solid var(--ink);border-radius:20px;padding:10px 10px 12px;display:flex;flex-direction:column;gap:4px;min-height:132px}
+.sc svg{width:44px;height:44px}
+.sc .t{font-family:'Bagel Fat One','Arial Black',sans-serif;font-size:16px;line-height:1.12}
+.sc .num{font-size:11px;font-weight:700;margin-top:auto}
+.mini{padding:12px 14px 14px;display:flex;flex-direction:column;gap:4px}
+.mini .big{font-size:44px;line-height:1}
+.mini .t{font-size:15px;font-weight:700;line-height:1.25}
+.meter{display:flex;gap:4px;margin:4px 0}
+.meter i{flex:1;height:10px;border:2.5px solid var(--ink);border-radius:6px;background:var(--cream)}
+.meter i.on{background:var(--bord)}
+.part{border:3px solid var(--ink);border-radius:20px;padding:10px;display:flex;flex-direction:column;gap:2px;background:var(--cream)}
+.part svg{width:34px;height:34px}
+.part .t{font-size:13px;font-weight:700;line-height:1.2}
+.sec{font-size:22px}
+.btn{border:3px solid var(--ink);box-shadow:5px 5px 0 var(--ink);border-radius:22px;background:var(--bord);color:var(--cream);font-family:'Bagel Fat One','Arial Black',sans-serif;font-size:22px;padding:16px 18px;width:100%;min-height:60px}
+.btn.alt{background:var(--cream);color:var(--ink);font-size:17px;min-height:48px;padding:10px 14px;box-shadow:3px 3px 0 var(--ink)}
+.note{font-size:13px;font-weight:600;border:3px dashed var(--ink);border-radius:18px;padding:10px 14px;display:flex;gap:10px;align-items:center;justify-content:space-between}
+.note button{border:0;background:none;font-weight:700;text-decoration:underline;min-height:44px;padding:0 4px}
+.foot{font-size:12px;font-weight:600;text-align:center;line-height:1.5}
+.foot a{color:var(--ink)}
+.sheet{position:fixed;inset:0;background:rgba(42,35,32,.45);display:none;align-items:flex-end;justify-content:center;z-index:10}
+.sheet.on{display:flex}
+.sheet .in{background:var(--oat);border:3px solid var(--ink);border-bottom:0;border-radius:28px 28px 0 0;width:100%;max-width:460px;max-height:92vh;overflow:auto;padding:18px 18px calc(22px + env(safe-area-inset-bottom));display:flex;flex-direction:column;gap:14px;animation:up .3s ease-out both}
+@keyframes up{from{transform:translateY(40px);opacity:0}to{transform:none;opacity:1}}
+.field{border:3px solid var(--ink);border-radius:16px;background:var(--cream);padding:12px 14px;font:inherit;font-weight:600;font-size:16px;width:100%;color:var(--ink)}
+.res{display:flex;flex-direction:column;gap:6px}
+.res button{border:3px solid var(--ink);border-radius:14px;background:var(--cream);padding:10px 12px;text-align:left;font-weight:700;min-height:44px}
+.chips{display:flex;gap:8px;flex-wrap:wrap}
+.chip{border:3px solid var(--ink);border-radius:999px;background:var(--cream);padding:8px 14px;font-weight:700;min-height:44px}
+.chip[aria-pressed=true]{background:var(--bord);color:var(--cream)}
+.heads{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px}
+.heads button{border:3px solid var(--ink);border-radius:18px;background:var(--cream);padding:4px;min-height:44px}
+.heads button[aria-pressed=true]{background:var(--pink);box-shadow:3px 3px 0 var(--ink)}
+.heads svg{width:100%;height:auto;display:block}
+.storyimg{width:100%;border:3px solid var(--ink);border-radius:18px;display:block}
+.dress{animation:dress .65s cubic-bezier(.3,1.4,.5,1) both;transform-box:fill-box;transform-origin:50% 0}
+@keyframes dress{0%{opacity:0;transform:translateY(-46px) scale(1.06,.55)}55%{opacity:1}100%{opacity:1;transform:none}}
+.rowi.lit{animation:lit .9s ease-out}
+@keyframes lit{0%{transform:none}30%{transform:scale(1.05);background:#FFE9B8}100%{transform:none}}
+#fig{animation:breathe 3.4s ease-in-out infinite;cursor:pointer}
+@keyframes breathe{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
+.drift{animation:drift linear infinite}
+@keyframes drift{to{transform:translateX(-105px)}}
+.fall{animation:fall .9s linear infinite}
+@keyframes fall{from{transform:translate(4px,-26px)}to{transform:translate(-4px,26px)}}
+.mini .tip{font-size:13px;font-weight:600;line-height:1.3}
+@media (prefers-reduced-motion:reduce){.pop,.bubble,.sheet .in,.dress,.rowi.lit,#fig,.drift,.fall{animation:none}.thumb{transition:none}}
+</style>
+</head>
+<body>
+<div class="wrap" id="app">
+  <div class="top">
+    <div class="brand">
+      <svg viewBox="0 0 72 72" aria-hidden="true"><g stroke="#2A2320" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="64" height="64" rx="18" fill="#7A2E35"/><path d="M36 26 q-1 -5 3 -7 q6 -1 6 -6 q0 -5 -6 -5" fill="none" stroke="#FFFBF3"/><path d="M36 26 L56 40 q3 4 -2 4 H18 q-5 0 -2 -4 Z" fill="#FFFBF3"/><path d="M36 50 q-5 7 0 10 q5 -3 0 -10z" fill="#C9965A"/></g></svg>
+      <span class="h">Kleerweer</span>
+    </div>
+    <button class="pill gear" id="placeBtn" aria-haspopup="dialog" aria-label="Instellingen"><svg viewBox="0 0 24 24" aria-hidden="true" fill="#FFFBF3" stroke="#2A2320" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/><circle cx="12" cy="12" r="3.2" fill="#C9965A"/></svg></button>
+  </div>
+
+  <div id="demoNote" class="note" hidden><span>Geen verbinding met het weerbericht. Dit is voorbeeldweer.</span><button id="retry">Opnieuw</button></div>
+
+  <section aria-live="polite">
+    <p class="meta" id="meta">Kleerweer · vandaag</p>
+    <h1 class="card bubble" id="verdict">Even kijken wat het buiten doet.</h1>
+  </section>
+
+  <div class="row" style="margin-bottom:-8px"><h2 class="h sec">Dit trek je aan</h2><p class="lab">van binnen naar buiten</p></div>
+  <section class="card stage" id="stage" aria-label="Je outfit van vandaag">
+    <svg class="wx" id="wx" viewBox="0 0 400 400" preserveAspectRatio="none" aria-hidden="true"></svg>
+    <svg class="fig" id="fig" viewBox="0 0 200 400" role="img" aria-label="Poppetje in de outfit van dit moment"></svg>
+    <div class="side" id="side"></div>
+  </section>
+
+  <section class="card tl" aria-label="Laagjes-tijdlijn">
+    <div class="row"><h2 class="h sec">Laagjes vandaag</h2><p class="lab" id="tlTime">nu</p></div>
+    <div>
+      <div class="barwrap">
+        <div class="bar" id="bar"></div>
+        <input type="range" id="scrub" min="7" max="22" step="1" value="12" aria-label="Schuif door de dag">
+        <div class="thumb" id="thumb">12</div>
+      </div>
+      <div class="ticks"><span>7:00</span><span>12:00</span><span>17:00</span><span>22:00</span></div>
+    </div>
+    <div class="moms" id="moms"></div>
+  </section>
+
+  <section class="g3" id="scen" aria-label="Het weer op dit moment"></section>
+  <section class="g2" id="minis"></section>
+
+  <section>
+    <h2 class="h sec" style="margin-bottom:10px">Per dagdeel</h2>
+    <div class="g3" id="parts"></div>
+  </section>
+
+  <section class="card mini" id="fb" style="background:var(--olive);gap:10px">
+    <p class="lab">Klopte het advies</p>
+    <div class="chips" id="fbBtns"><button class="chip" data-f="tekoud">Te koud</button><button class="chip" data-f="goed">Goed</button><button class="chip" data-f="tewarm">Te warm</button></div>
+    <p class="t" id="fbDone" hidden>Dank je. Hiermee wordt het advies beter.</p>
+  </section>
+
+  <section style="display:flex;flex-direction:column;gap:10px">
+    <button class="btn" id="storyBtn">Maak je story</button>
+  </section>
+
+  <div id="installNote" class="note" hidden><span>Zet Kleerweer op je beginscherm: tik op Delen en dan op Zet op beginscherm.</span><button id="installX">Oké</button></div>
+
+  <p class="foot">We zeggen alleen wanneer je jas uit kan en je paraplu mee moet.<br>Geen advertenties, geen webshop, geen account.<br>We tellen alleen bezoeken en tikken, zonder cookies en zonder te weten wie je bent.<br>Weerdata: <a href="https://open-meteo.com/">Open-Meteo</a></p>
+</div>
+
+<div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="sheetT">
+  <div class="in">
+    <div class="row"><h2 class="h sec" id="sheetT">Instellingen</h2><button class="pill" id="sheetX">Klaar</button></div>
+    <p class="lab">Waar ben je</p>
+    <label class="lab" for="q" style="position:absolute;left:-9999px">Zoek een plaats</label>
+    <input class="field" id="q" type="search" placeholder="Zoek een plaats" autocomplete="off" enterkeyhint="search">
+    <div class="res" id="res"></div>
+    <button class="btn alt" id="geo">Gebruik mijn locatie</button>
+    <p class="lab">Jouw poppetje</p>
+    <div class="heads" id="heads"></div>
+    <p class="lab">Jouw stijl</p>
+    <div class="chips" id="styles"></div>
+    <p class="lab">Hoe lang ben je buiten</p>
+    <div class="chips" id="dur"></div>
+    <p class="lab">Jij</p>
+    <div class="chips" id="coldc"></div>
+    <p class="foot" style="text-align:left;margin-top:-6px">Nu gratis in de beta. Later hoort dit bij Pro.</p>
+  </div>
+</div>
+
+<div class="sheet" id="storySheet" role="dialog" aria-modal="true" aria-labelledby="storyT">
+  <div class="in">
+    <div class="row"><h2 class="h sec" id="storyT">Je story</h2><button class="pill" id="storyX">Sluit</button></div>
+    <img class="storyimg" id="storyImg" alt="Je story-plaatje met poppetje, datum, temperatuur en plaats">
+    <button class="btn" id="shareBtn">Deel</button>
+    <p class="foot" id="storyHint">Lukt delen niet? Houd het plaatje ingedrukt en kies Bewaar.</p>
+  </div>
+</div>
+
+<script>
+'use strict';
+/* ---------- helpers ---------- */
+const INK='#2A2320', CREAM='#FFFBF3';
+const $=id=>document.getElementById(id);
+const store={get(k,d){try{const v=localStorage.getItem('kw_'+k);return v?JSON.parse(v):d}catch(e){return d}},set(k,v){try{localStorage.setItem('kw_'+k,JSON.stringify(v))}catch(e){}}};
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+/* ---------- tellen: GoatCounter, zonder cookies ---------- */
+const STATS='kleerweer'; // vul hier je GoatCounter-naam in, bijvoorbeeld 'kleerweer'. Leeg = er wordt niets geteld.
+const statsOn=!!STATS&&location.protocol==='https:'&&!/localhost|127\.0|claude/.test(location.host);
+const statsQ=[], statsSeen={};
+function track(name,once,title){ // once: hooguit 1 keer per keer dat de app open is
+  if(!statsOn) return; if(once){ if(statsSeen[name]) return; statsSeen[name]=1; }
+  const go=()=>{ try{ window.goatcounter.count({path:name,title:title||name,event:true}); }catch(e){} };
+  if(window.goatcounter&&window.goatcounter.count) go(); else statsQ.push(go);
+}
+if(statsOn){ const sc=document.createElement('script'); sc.async=true; sc.src='https://gc.zgo.at/count.js'; sc.setAttribute('data-goatcounter','https://'+STATS+'.goatcounter.com/count'); sc.onload=()=>{ statsQ.splice(0).forEach(f=>f()); }; document.head.appendChild(sc); }
+
+/* ---------- tekenen ---------- */
+let SIL=false; // silhouet-modus: tekent de witte stickerrand
+function P(d,fill,o={}){
+  if(SIL){ if(o.deco) return ''; return `<path d="${d}" fill="${CREAM}" stroke="${CREAM}" stroke-width="${(o.sw||3.4)+10}"/>`; }
+  const st=o.ns?'stroke="none"':`stroke="${o.st||INK}" stroke-width="${o.sw||3.4}"`;
+  return `<path d="${d}" fill="${fill}" ${st}${o.op?` opacity="${o.op}"`:''}/>`;
+}
+function L(d,o={}){ return SIL?'':`<path d="${d}" fill="none" stroke="${o.st||INK}" stroke-width="${o.sw||2.2}"${o.op?` opacity="${o.op}"`:''}/>`; }
+function Ci(cx,cy,r,fill,o={}){
+  if(SIL){ if(o.deco) return ''; return `<circle cx="${cx}" cy="${cy}" r="${r}" fill="${CREAM}" stroke="${CREAM}" stroke-width="13.4"/>`; }
+  return `<circle cx="${cx}" cy="${cy}" r="${r}" fill="${fill}" ${o.ns?'stroke="none"':`stroke="${o.st||INK}" stroke-width="${o.sw||3.4}"`}${o.op?` opacity="${o.op}"`:''}/>`;
+}
+function El(cx,cy,rx,ry,fill,o={}){
+  if(SIL){ if(o.deco) return ''; return `<ellipse cx="${cx}" cy="${cy}" rx="${rx}" ry="${ry}" fill="${CREAM}" stroke="${CREAM}" stroke-width="13.4"/>`; }
+  return `<ellipse cx="${cx}" cy="${cy}" rx="${rx}" ry="${ry}" fill="${fill}" stroke="${INK}" stroke-width="${o.sw||3.4}"/>`;
+}
+const HI='rgba(255,255,255,.5)', SH={ns:1,op:.17,deco:1};
+const ARM_L='M70 164 q-16 4 -20 22 l-6 62 q9 9 20 2 l8 -56z', ARM_R='M130 164 q16 4 20 22 l6 62 q-9 9 -20 2 l-8 -56z';
+const torso=(b,f=0)=>`M70 162 q30 -10 60 0 l6 26 L${136+f} ${b} q${-(36+f)} 8 ${-(72+2*f)} 0 L64 188z`;
+const shade=(b,f=0)=>`M116 158 q8 1 14 4 l6 26 L${136+f} ${b} q-10 3 -22 4z`;
+const panels=(b,f=0)=>[`M70 162 q10 -4 18 -4 l4 30 L88 ${b+2} q-14 2 ${-(24+f)} -2 L64 188z`,`M130 162 q-10 -4 -18 -4 l-4 30 L112 ${b+2} q14 2 ${24+f} -2 L136 188z`];
+const arms=c=>P(ARM_L,c)+P(ARM_R,c);
+
+const CHARS=[
+  {id:'a',skin:'#8A5A3C',lid:'#6E4530',lip:'#8C3A40',hair:'#2B211C',kind:'curls',fem:true,brow:INK},
+  {id:'b',skin:'#F2D3BC',lid:'#E3B7A0',lip:'#C46A6A',hair:'#E8C56A',kind:'long',fem:true,brow:'#A9843A'},
+  {id:'c',skin:'#EBC7A6',lid:'#D2A988',hair:'#B8B2AA',kind:'beard',fem:false,brow:'#7E786F'},
+  {id:'d',skin:'#C99A72',lid:'#A9744E',lip:'#8C3A40',hair:'#5B4A40',kind:'bob',fem:true,brow:INK},
+  {id:'e',skin:'#A8744F',lid:'#8C5C3C',hair:'#1F1815',kind:'short',fem:false,brow:INK}
+];
+const STYLES={
+  casual:{label:'Casual',broek:['baggy','#8FA3BD','Baggy jeans'],schoen:['#FFFBF3','#C2643A','Sneakers'],shirt:'#FFFBF3',trui:['hoodie','#B9B4AC','Hoodie'],
+    dun:['denim','#5E7696','spijkerjack'],herfst:['bomber','#8C3A40','leren bomber'],dik:['puffer','#8A8F5A','korte puffer'],winter:['longpuffer','#7A5A44','lange puffer'],regen:['rain','#5F7D5F','met capuchon'],sjaal:'#C9965A',muts:'#7A2E35'},
+  classic:{label:'Classic',broek:['wide','#6B4A38','Wijde pantalon'],schoen:['#3A2A20',null,'Loafers'],shirt:'#F1E7D4',trui:['knit','#7A2E35','Gebreide trui'],
+    dun:['denim','#8A8F5A','overshirt'],herfst:['coat','#C9965A','wollen jas'],dik:['puffer','#5E7696','korte puffer'],winter:['coat','#7A5A44','lange wollen jas'],regen:['rain','#5E7696','met capuchon'],sjaal:'#7A2E35',muts:'#4E6485'},
+  comfy:{label:'Comfy',broek:['straight','#4E6485','Jeans'],schoen:['#7A5A44',null,'Boots'],shirt:'#FFFBF3',trui:['vest','#5F7D5F','Vest'],
+    dun:['denim','#5E7696','spijkerjack'],herfst:['teddy','#E8DCC6','teddy jas'],dik:['puffer','#C9965A','korte puffer'],winter:['longpuffer','#5F7D5F','lange puffer'],regen:['rain','#8A8F5A','met capuchon'],sjaal:'#C2643A',muts:'#C9965A'}
+};
+const truiNaam=(st,dik)=>{ const t=st.trui, n=t[2].toLowerCase(); return t[0]==='vest'?(dik?'Dik ':'Dun ')+n:(dik?'Dikke ':'Dunne ')+n; };
+const JASNAAM={winter:'Winterjas',dik:'Dikke jas',herfst:'Herfstjas',dun:'Dunne jas',regen:'Regenjas'};
+
+function hairBack(ch,muts){
+  const h=ch.hair;
+  if(ch.kind==='curls'){
+    const cs=[[48,90,20],[58,60,22],[80,40,24],[110,36,24],[138,52,24],[152,82,20],[46,112,16],[154,108,16]];
+    return cs.filter(c=>!muts||c[1]>=80).map(c=>Ci(c[0],c[1],c[2],h)).join('');
+  }
+  if(ch.kind==='long') return P('M50 96 q-8 -62 50 -62 q58 0 50 62 l6 112 q-12 8 -26 4 h-60 q-14 4 -26 -4z',h);
+  if(ch.kind==='bob') return P('M44 124 q-12 -88 56 -86 q68 -2 56 86 q-2 14 -14 12 h-84 q-12 2 -14 -12z',h);
+  return '';
+}
+function head(ch){
+  const s=ch.skin, h=ch.hair; let o='';
+  if(!ch.fem) o+=Ci(52,98,8,s)+Ci(148,98,8,s);
+  o+=El(100,92,48,46,s);
+  if(ch.kind==='beard'){ o+=P('M54 100 q4 40 46 40 q42 0 46 -40 q-14 22 -46 22 q-32 0 -46 -22z',h,{deco:1}); o+=P('M53 84 q-4 -44 47 -42 q51 -2 47 42 q-8 -20 -22 -24 q-25 8 -50 0 q-14 4 -22 24z',h,{deco:1}); }
+  if(ch.kind==='short') o+=P('M53 86 q-4 -46 47 -44 q51 -2 47 44 q-10 -22 -47 -22 q-37 0 -47 22z',h,{deco:1});
+  if(ch.kind==='curls') o+=Ci(72,54,14,h,{deco:1})+Ci(97,48,15,h,{deco:1})+Ci(123,54,14,h,{deco:1});
+  if(ch.kind==='long') o+=P('M52 96 q-2 -50 48 -52 q50 2 48 52 q-12 -26 -48 -40 q-36 14 -48 40z',h,{deco:1});
+  if(ch.kind==='bob'){ o+=P('M54 84 q8 -38 46 -38 q38 0 46 38 q-20 -18 -46 -16 q-26 -2 -46 16z',h,{deco:1}); o+=P('M84 49 q10 -4 20 -1 q-12 8 -16 20z','#D8D2C8',{ns:1,deco:1}); }
+  if(SIL) return o;
+  const ey=ch.fem?16:14.5, ry=ch.fem?14:12.5, y=96;
+  o+=`<ellipse cx="80" cy="${y}" rx="${ey}" ry="${ry}" fill="#fff" stroke="${INK}" stroke-width="3"/><ellipse cx="120" cy="${y}" rx="${ey}" ry="${ry}" fill="#fff" stroke="${INK}" stroke-width="3"/>`;
+  o+=`<path d="M${80-ey} ${y} a${ey} ${ry} 0 0 1 ${2*ey} 0z" fill="${ch.lid}" stroke="${INK}" stroke-width="3"/><path d="M${120-ey} ${y} a${ey} ${ry} 0 0 1 ${2*ey} 0z" fill="${ch.lid}" stroke="${INK}" stroke-width="3"/>`;
+  o+=`<circle cx="85" cy="${y+5}" r="4" fill="${INK}"/><circle cx="125" cy="${y+5}" r="4" fill="${INK}"/>`;
+  if(ch.fem) o+=L('M64 98 l-7 3 M66 104 l-6 5 M136 98 l7 3 M134 104 l6 5',{sw:2.6});
+  o+=L('M68 78 q12 -6 26 -1 M106 77 q14 -5 26 1',{sw:ch.fem?2.8:4,st:ch.brow});
+  if(ch.kind==='beard') o+=L('M61 81 h38 v28 h-38z M101 81 h38 v28 h-38z',{sw:3.4,st:'#5A3E2E'});
+  o+=L('M100 104 l-4 11 h7',{sw:2.4});
+  if(ch.fem) o+=`<path d="M88 124 q6 -5 12 -1 q6 -4 12 1 q-12 11 -24 0z" fill="${ch.lip}" stroke="${INK}" stroke-width="2.4"/>`;
+  else o+=L('M90 127 q10 3 20 -2',{sw:2.8});
+  return o;
+}
+function gBroek(st){
+  const [t,c]=st.broek;
+  const d=t==='baggy'?'M68 254 L134 254 L142 366 L108 366 L102 292 L94 366 L60 366 Z':t==='wide'?'M70 254 L132 254 L138 368 L106 368 L101 296 L96 368 L64 368 Z':'M72 254 L130 254 L134 366 L108 366 L102 296 L94 366 L68 366 Z';
+  let o=P(d,c)+P(t==='baggy'?'M122 254 L134 254 L142 366 L130 366 Z':'M120 254 L130 254 L135 366 L124 366 Z',INK,SH);
+  if(t==='wide') o+=L('M84 262 v100 M118 262 v100',{sw:1.8}); else o+=L('M101 258 v32 M72 262 q8 8 2 18',{sw:2});
+  return o;
+}
+function gSchoen(st,boots){
+  let [c,stripe]=st.schoen;
+  if(boots){ c='#7A5A44'; stripe=null; }
+  let o=P('M56 384 q0 -20 14 -20 h26 v20 q0 5 -5 5 h-30 q-5 0 -5 -5z',c)+P('M106 364 h28 q16 2 16 20 q0 5 -5 5 h-34 q-5 0 -5 -5z',c);
+  if(stripe) o+=L('M57 380 h38 M107 380 h42',{st:stripe,sw:4});
+  if(boots) o=P('M62 344 h33 v22 h-33z',c)+P('M106 344 h31 v22 h-31z',c)+o+L('M56 381 h40 M106 381 h44',{sw:3});
+  return o;
+}
+function gLijf(ch){ return P('M63 251 q-9 5 -19 -1 q-2 15 9 17 q10 0 10 -16z',ch.skin)+P('M137 251 q9 5 19 -1 q2 15 -9 17 q-10 0 -10 -16z',ch.skin)+P('M91 132 h18 v30 h-18z',ch.skin); }
+function gShirt(st,ch,mode){
+  let o='';
+  if(mode==='long') o+=arms(st.shirt);
+  if(mode==='bare') o+=arms(ch.skin)+P('M70 164 q-16 4 -20 22 l-2 18 q10 6 21 2 l5 -14z',st.shirt)+P('M130 164 q16 4 20 22 l2 18 q-10 6 -21 2 l-5 -14z',st.shirt);
+  o+=P(torso(262),st.shirt)+P(shade(262),INK,SH)+L('M88 161 q12 12 24 0',{sw:2.4});
+  return o;
+}
+function gTrui(st){
+  const [t,c]=st.trui; let o='';
+  if(t==='hoodie'){
+    o+=arms(c)+P(torso(264),c)+P(shade(264),INK,SH)+P('M65 254 h70 v11 h-70z',c)+P('M65 254 h70 v11 h-70z',INK,{ns:1,op:.15,deco:1});
+    o+=L('M84 222 h32 l5 26 h-42z',{sw:2.2})+P('M76 160 q24 -14 48 0 q-4 14 -24 16 q-20 -2 -24 -16z',c)+L('M93 174 v18 M107 174 v18',{st:CREAM,sw:3});
+  } else if(t==='knit'){
+    o+=arms(c)+P(torso(262),c)+P(shade(262),INK,SH)+L('M86 160 q14 12 28 0 M66 252 q34 8 68 0',{sw:2.4})+L('M84 184 v60 M100 180 v66 M116 184 v60',{st:HI,sw:2.6});
+  } else {
+    const [a,b]=panels(268); o+=arms(c)+P(a,c)+P(b,c)+L('M70 236 h14 v20 h-14z M116 236 h14 v20 h-14z',{sw:2});
+    o+=Ci(114,204,3,'#D4A93A',{sw:1.6,deco:1})+Ci(115,232,3,'#D4A93A',{sw:1.6,deco:1})+Ci(116,258,3,'#D4A93A',{sw:1.6,deco:1});
+  }
+  return o;
+}
+function gJas(st,type,open){
+  const [t,c]=st[type]; let o=arms(c);
+  const B={denim:250,bomber:246,coat:312,teddy:272,puffer:262,longpuffer:318,rain:292}[t], F=(t==='coat'||t==='longpuffer')?2:0;
+  if(open){ const [a,b]=panels(B,F); o+=P(a,c)+P(b,c); } else o+=P(torso(B,F),c)+P(shade(B,F),INK,SH);
+  const mid=open?'':`M100 182 V${B+4}`;
+  if(t==='denim'){
+    o+=P('M82 158 l18 18 l-10 9 l-16 -19z',c,{sw:2.6})+P('M118 158 l-18 18 l10 9 l16 -19z',c,{sw:2.6});
+    o+=L(`${mid} M66 240 h${open?20:68}`,{sw:2})+L('M70 200 h14 v14 l-7 4 l-7 -4z M116 200 h14 v14 l-7 4 l-7 -4z',{sw:2,st:'#F1E7D4'});
+    if(!open) o+=Ci(105,196,2.6,'#D4A93A',{sw:1.4,deco:1})+Ci(105,218,2.6,'#D4A93A',{sw:1.4,deco:1});
+  } else if(t==='bomber'){
+    if(open) o+=P('M64 244 h24 v13 h-24z',c)+P('M112 244 h24 v13 h-24z',c)+P('M64 244 h24 v13 h-24z M112 244 h24 v13 h-24z',INK,{ns:1,op:.3,deco:1});
+    else o+=P('M64 244 h72 v13 h-72z',c)+P('M64 244 h72 v13 h-72z',INK,{ns:1,op:.3,deco:1});
+    o+=P('M82 158 l18 20 l-10 8 l-16 -20z',c,{sw:2.6})+P('M118 158 l-18 20 l10 8 l16 -20z',c,{sw:2.6});
+    o+=L(`${open?'':'M100 186 v58'} M74 214 l8 12 M126 214 l-8 12`,{sw:2.2})+L('M76 190 v16 M52 190 l-2 12',{st:HI,sw:3.2});
+  } else if(t==='coat'){
+    o+=P('M84 160 L100 200 L88 208 L74 176z',c,{sw:2.4})+P('M116 160 L100 200 L112 208 L126 176z',c,{sw:2.4})+P('M84 160 L100 200 L88 208 L74 176z M116 160 L100 200 L112 208 L126 176z','#fff',{ns:1,op:.22,deco:1});
+    o+=L(`${open?'':'M100 200 V316'} M64 252 h16 M120 252 h14`,{sw:2.2});
+    if(!open) o+=Ci(108,226,3.2,INK,{ns:1,deco:1})+Ci(108,262,3.2,INK,{ns:1,deco:1});
+  } else if(t==='teddy'){
+    o+=L('M70 200 q3 -4 6 0 M84 214 q3 -4 6 0 M68 232 q3 -4 6 0 M84 250 q3 -4 6 0 M112 204 q3 -4 6 0 M124 222 q3 -4 6 0 M110 240 q3 -4 6 0 M126 256 q3 -4 6 0 M50 200 q3 -4 6 0 M48 226 q3 -4 6 0 M144 204 q3 -4 6 0 M146 230 q3 -4 6 0',{st:'#B8A888',sw:2.4});
+    o+=L(mid,{sw:2.2})+P('M78 160 l22 26 l-14 10 l-18 -24z',c,{sw:2.6})+P('M122 160 l-22 26 l14 10 l18 -24z',c,{sw:2.6});
+  } else if(t==='puffer'||t==='longpuffer'){
+    let q=''; for(let y=198;y<B-6;y+=28) q+=open?`M64 ${y} q12 4 24 3 M112 ${y+3} q12 1 24 -3 `:`M64 ${y} q36 8 72 0 `;
+    o+=L(q+`${mid} M46 200 l18 5 M45 224 l18 4 M154 200 l-18 5 M155 224 l-18 4`,{sw:2})+L('M74 174 v12 M73 204 v10 M72 234 v10',{st:HI,sw:3});
+    o+=P('M76 148 q24 -8 48 0 v16 q-24 8 -48 0z',c);
+  } else {
+    o+=L(mid,{sw:2.2})+P('M68 240 h20 v8 h-20z',c,{sw:2.2})+P('M112 240 h20 v8 h-20z',c,{sw:2.2})+L('M76 182 v20 M75 214 v12',{st:HI,sw:3.4});
+    if(!open) o+=Ci(107,200,3.2,CREAM,{sw:1.8,deco:1})+Ci(107,232,3.2,CREAM,{sw:1.8,deco:1})+Ci(107,264,3.2,CREAM,{sw:1.8,deco:1});
+    o+=P('M74 160 q26 -18 52 0 q-2 12 -12 14 q-14 -8 -28 0 q-10 -2 -12 -14z',c)+L('M92 170 v16 M108 170 v16',{st:CREAM,sw:2.4});
+  }
+  return o;
+}
+function gSjaal(st){ const c=st.sjaal; return P('M90 156 h16 l3 50 h-20z',c)+L('M92 206 v8 M98 206 v8 M104 206 v8',{st:c,sw:2.6})+P('M82 136 h36 v22 q-18 12 -36 0z',c)+L('M84 146 q16 8 32 0',{sw:2}); }
+function gMuts(st){ const c=st.muts; return P('M52 72 q0 -48 48 -48 q48 0 48 48z',c)+P('M47 58 h106 v18 h-106z',c)+L('M62 58 v18 M78 58 v18 M94 58 v18 M110 58 v18 M126 58 v18 M142 58 v18',{sw:1.8}); }
+
+/* lagen in volgorde van achter naar voor; sig bepaalt of een laag opnieuw "aanspringt" */
+function layers(ch,st,s){
+  const jasOn=s.jas&&s.jasState!=='uit', open=s.jasState==='open';
+  const out=[];
+  const add=(k,sig,fn)=>out.push({k,sig,fn});
+  add('haar','h'+(s.muts?1:0),()=>hairBack(ch,s.muts));
+  add('broek','b',()=>gBroek(st));
+  add('schoen','s'+(s.boots?1:0),()=>gSchoen(st,s.boots));
+  add('lijf','l',()=>gLijf(ch));
+  const sm=(!s.trui&&!jasOn)||DRESSING?(s.base==='tshirt'?'bare':'long'):'none'; add('shirt','t'+sm,()=>gShirt(st,ch,sm));
+  if(s.trui) add('trui','tr',()=>gTrui(st));
+  if(jasOn) add('jas','j'+s.jas+(open?'o':'d'),()=>gJas(st,s.jas,open));
+  if(s.sjaal) add('sjaal','sj',()=>gSjaal(st));
+  add('hoofd','hd',()=>head(ch));
+  if(s.muts) add('muts','m',()=>gMuts(st));
+  return out;
+}
+let prevSig={}, DRESSING=false, dressSeq=[];
+const DRESS=['shirt','broek','trui','schoen','jas','sjaal','muts']; // volgorde van aankleden
+function figureInner(ch,st,s,mode){ // mode: 'dress' laag voor laag aankleden, 'all' alles animeren, 'diff' alleen wat verandert, 'none'
+  DRESSING=mode==='dress'; const ls=layers(ch,st,s); DRESSING=false;
+  const sig={}; let sil='',main='',i=0; dressSeq=[];
+  const order=DRESS.filter(k=>ls.some(l=>l.k===k)), dl=k=>0.15+order.indexOf(k)*0.6;
+  for(const l of ls){
+    sig[l.k]=l.sig; let cls='';
+    if(mode==='dress'){ if(order.includes(l.k)) cls=` class="dress" style="animation-delay:${dl(l.k).toFixed(2)}s"`; }
+    else { const anim=mode==='all'||(mode==='diff'&&prevSig[l.k]!==l.sig);
+      if(anim){ cls=` class="pop" style="animation-delay:${mode==='all'?(i*0.11).toFixed(2):'0'}s"`; if(mode==='diff') dressSeq.push({k:l.k,d:0}); } }
+    SIL=true; sil+=`<g${cls}>${l.fn()}</g>`; SIL=false; main+=`<g${cls}>${l.fn()}</g>`; i++;
+  }
+  if(mode==='dress') dressSeq=order.map(k=>({k,d:dl(k)}));
+  if(mode!=='none') prevSig=sig;
+  return `<ellipse cx="102" cy="388" rx="62" ry="8" fill="${INK}" opacity=".22"/><g stroke-linejoin="round" stroke-linecap="round">${sil}</g><g stroke-linejoin="round" stroke-linecap="round">${main}</g>`;
+}
+function pieceSVG(vb,fn){ SIL=true; const a=fn(); SIL=false; const b=fn(); return `<svg viewBox="${vb}" aria-hidden="true"><g stroke-linejoin="round" stroke-linecap="round">${a}${b}</g></svg>`; }
+
+/* ---------- weer ---------- */
+const DEMO=(()=>{ // een wisselvallige novemberdag
+  const t=[5,5,6,7,9,11,12,13,13,12,10,9,8,7,6,6], f=[2,2,3,5,7,10,11,12,12,10,8,6,5,4,3,3], pp=[10,10,15,15,20,20,15,20,30,45,70,65,40,25,20,15], w=[18,20,22,24,24,22,20,20,22,26,30,28,24,20,18,16];
+  return t.map((x,i)=>({h:7+i,t:x,feel:f[i],pp:pp[i],pr:pp[i]>=50?1.2:0,wind:w[i],hum:78,code:pp[i]>=50?61:i<6?3:2}));
+})();
+async function fetchWeather(p){
+  const u=`https://api.open-meteo.com/v1/forecast?latitude=${p.lat}&longitude=${p.lon}&hourly=temperature_2m,apparent_temperature,precipitation_probability,precipitation,wind_speed_10m,relative_humidity_2m,weather_code&timezone=auto&forecast_days=2`;
+  const r=await fetch(u); if(!r.ok) throw new Error('weer '+r.status);
+  return r.json();
+}
+function pickDay(j){
+  const H=j.hourly, now=new Date(); let off=0;
+  const cur=j.current_hour ?? now.getHours();
+  if(cur>=22) off=1; // na tienen kijken we naar morgen
+  const day=H.time[0].slice(0,10); const out=[];
+  const target=off?H.time[24].slice(0,10):day;
+  H.time.forEach((ts,i)=>{ if(ts.slice(0,10)!==target) return; const h=+ts.slice(11,13); if(h<7||h>22) return;
+    out.push({h,t:H.temperature_2m[i],feel:H.apparent_temperature[i],pp:H.precipitation_probability[i]??0,pr:H.precipitation[i]??0,wind:H.wind_speed_10m[i],hum:H.relative_humidity_2m[i]??70,code:H.weather_code[i]??2}); });
+  return {hours:out,tomorrow:!!off,date:target};
+}
+
+/* ---------- laagjes-logica ---------- */
+const WARM={winter:13,dik:10,herfst:7,dun:4,regen:4};
+/* persoonlijk: even weg = 2 graden lichter kleden, snel koud = 2 graden warmer, snel warm = 2 graden lichter (eigen keuze, bijstellen met Klopte het) */
+const personalOff=()=>(S.temp==='koud'?-2:S.temp==='warm'?2:0)+(S.dur==='kort'?2:0);
+function plan(hours){
+  const off=personalOff(), F=x=>x.feel+off;
+  const rMin=Math.min(...hours.map(x=>x.feel)), rMax=Math.max(...hours.map(x=>x.feel));
+  const minF=rMin+off, maxF=rMax+off;
+  const wet=hours.filter(x=>x.pp>=50).length;
+  let jas=minF<4?'winter':minF<9?'dik':minF<14?'herfst':minF<20?'dun':null;
+  if(wet&&(jas===null||jas==='dun'||jas==='herfst')) jas='regen';
+  const hasTrui=minF<18, dikT=minF<10, hasSjaal=minF<6, hasMuts=minF<1;
+  const tw=truiNaam(sty(),dikT).toLowerCase();
+  const st=hours.map(x=>{
+    const f=F(x), need=19-f, rain=x.pp>=50; let best=null;
+    const js=jas?(rain?['dicht']:['dicht','open','uit']):['uit'];
+    for(const a of js) for(const tr of [hasTrui]){ // de trui kies je 's ochtends voor de hele dag
+      if(a==='open'&&x.feel<12) continue; if(a==='uit'&&x.feel<18) continue; // echte gevoelstemperatuur: jas open vanaf 12, uit pas vanaf 18
+      const w=(a==='dicht'?WARM[jas]:a==='open'?WARM[jas]*.55:0)+(tr?(dikT?6:4):0);
+      let sc=Math.abs(w-need); if(w<need-1) sc*=1.6; if(!tr&&a==='dicht'&&hasTrui) sc+=2.5;
+      if(!best||sc<best.sc) best={sc,jas,jasState:a,trui:tr};
+    }
+    // sjaal en muts volgen de grens per uur, niet de warmtesom: ze zijn voor je nek en je hoofd
+    best.sjaal=hasSjaal&&f<6&&best.jasState==='dicht'; best.muts=hasMuts&&f<1&&best.jasState==='dicht';
+    return best;
+  });
+  // niet friemelen: een stand moet minstens 3 uur duren, anders telt hij niet
+  const MIN=3;
+  for(const k of ['jasState','sjaal','muts']){
+    for(let pass=0;pass<6;pass++){ let changed=false, i=0;
+      while(i<st.length){ let j=i; while(j+1<st.length&&st[j+1][k]===st[i][k]) j++;
+        const len=j-i+1;
+        if(len<MIN&&!(i===0&&j===st.length-1)){ const v=i>0?st[i-1][k]:st[j+1][k]; for(let m=i;m<=j;m++) st[m][k]=v; changed=true; }
+        i=j+1; }
+      if(!changed) break; }
+  }
+  // sjaal en muts wisselen tegelijk met de jas als die binnen 2 uur verandert
+  const jc=[]; for(let i=1;i<st.length;i++) if(st[i].jasState!==st[i-1].jasState) jc.push(i);
+  for(const k of ['sjaal','muts']) for(let i=1;i<st.length;i++){ if(st[i][k]===st[i-1][k]) continue;
+    const j=jc.find(c=>Math.abs(c-i)<=2&&c!==i); if(j===undefined) continue;
+    if(j>i){ for(let m=i;m<j;m++) st[m][k]=st[i-1][k]; } else { for(let m=j;m<i;m++) st[m][k]=st[i][k]; } }
+  for(const x of st){ if(x.jasState!=='dicht'){ x.sjaal=false; x.muts=false; } }
+  const moms=[];
+  const first=[]; const s0=st[0];
+  if(s0.jas) first.push(s0.jasState==='dicht'?'jas dicht':s0.jasState==='open'?'jas open':'jas mee'); if(s0.sjaal) first.push('sjaal om'); if(s0.muts) first.push('muts op'); if(!first.length) first.push(s0.trui?tw+' is genoeg':'T-shirt is genoeg');
+  moms.push({h:hours[0].h,txt:first.join(', ')});
+  for(let i=1;i<st.length;i++){
+    const a=st[i-1], b=st[i], d=[];
+    if(a.trui!==b.trui) d.push(b.trui?tw+' weer aan':tw+' uit');
+    if(a.jasState!==b.jasState){ if(b.jasState==='open') d.push(a.jasState==='uit'?'jas weer aan':'jas open'); else if(b.jasState==='uit') d.push('jas uit'); else d.push(a.jasState==='uit'?'jas weer aan':'jas weer dicht'); }
+    if(a.sjaal!==b.sjaal) d.push(b.sjaal?'sjaal erbij':'sjaal af');
+    if(a.muts!==b.muts) d.push(b.muts?'muts op':'muts af');
+    if(d.length) moms.push({h:hours[i].h,txt:d.join(', ')});
+  }
+  const maxW=Math.max(...hours.map(x=>x.wind)), firstWet=hours.find(x=>x.pp>=50);
+  const base=minF<3?'hemd':minF<12?'long':'tshirt';
+  const boots=wet>0||(rMin<0);
+  st.forEach(x=>{x.base=base;x.boots=boots;});
+  return {jas,minF,maxF,rMin,rMax,off,dikT,wet,st,moms,hasTrui,hasSjaal,hasMuts,maxW,firstWet,base,boots,gloves:minF<3,umbrella:wet>0&&maxW<30};
+}
+function verdict(hours,pl,date){
+  const r=x=>Math.round(x), mn=r(pl.rMin), mx=r(pl.rMax), maxW=Math.max(...hours.map(x=>x.wind));
+  const at=h=>hours.find(x=>x.h===h)||hours[0];
+  const firstWet=hours.find(x=>x.pp>=50), clear=hours.filter(x=>x.code<=2).length>hours.length/2;
+  const n=Math.floor(new Date(date).getTime()/864e5);
+  const pick=a=>a[n%a.length];
+  if(maxW>=50) return pick([`Het waait ${r(maxW)} km per uur. Fiets laten staan, haar opgeven.`,`Storm. Alles wat los zit, zit straks ergens anders.`]);
+  if(pl.rMin<0) return pick([`Het vriest. Ja, echt. Muts, sjaal, alles.`,`Voelt als ${mn}. Vandaag is niet de dag voor je mooie dunne jas.`]);
+  if(pl.wet>=8) return pick([`Het regent vandaag gewoon. Regenjas aan en niet zeuren.`,`Nat van begin tot eind. Trek aan wat mag verpieteren.`]);
+  if(firstWet&&firstWet.h>=16&&firstWet.h<=19) return pick([`Om ${firstWet.h}:00 gaat het regenen. Precies als jij naar huis gaat, ja.`,`Het blijft droog tot ${firstWet.h}:00. Daarna word je nat.`]);
+  if(firstWet&&firstWet.h<=9&&pl.wet<6) return `Je begint nat. Daarna wordt het beter, beloofd.`;
+  if(firstWet) return `Rond ${firstWet.h}:00 komt er regen. Neem iets mee waar een capuchon aan zit.`;
+  if(pl.maxF-pl.minF>=8&&pl.hasTrui) return pick([`Vanochtend voelt het als ${mn}, vanmiddag als ${mx}. Laagjes, anders ga je het voelen.`,`Vanmiddag ga je die trui vervloeken. Trek hem toch maar aan.`]);
+  if(pl.minF<6&&at(8).wind>=20) return `Jas aan. Nee, de dikke. Het voelt als ${mn} en het waait.`;
+  if(pl.minF<6&&clear) return `Zon, maar het voelt als ${mn}. Laat je niet voor de gek houden.`;
+  if(pl.minF<9) return pick([`Voelt als ${mn}. Dikke jas, handen in je zakken, klaar.`,`Koud, maar droog. Dat is hier al heel wat.`]);
+  if(pl.minF<14) return `Herfstweer. Jas mee, die gaat vanmiddag misschien open.`;
+  if(pl.minF<20) return `Een dunne jas is genoeg. Geniet ervan, het duurt nooit lang.`;
+  if(pl.maxF<25) return `Jas kan thuisblijven. Dat zeggen we niet vaak.`;
+  return `Het wordt ${mx}. Zo weinig mogelijk aan en veel drinken.`;
+}
+const gevoel=f=>f<-3?'Alles wat uitsteekt doet pijn':f<3?'Je adem wordt een wolkje':f<9?'Handen in je zakken':f<14?'Fris, maar te doen':f<19?'Zon fijn, schaduw fris':f<24?'Jas kan thuisblijven':'Alles plakt';
+const regenT=p=>p<10?'Droog':p<35?'Droog, misschien een spatje':p<65?'Grote kans dat je nat wordt':'Je wordt nat';
+const windT=w=>w<12?'Je merkt het niet':w<25?'Haar in je gezicht':w<40?'Paraplu wordt lastig':'Tegenwind is een workout';
+function fiets(x){ let s=10; if(x.wind>15) s-=(x.wind-15)/5; s-=x.pp/20; if(x.feel<3) s-=1; if(x.feel<0) s-=1; s=Math.max(1,Math.min(10,Math.round(s))); return {s,t:s>=8?'Gewoon gaan':s>=6?'Prima te doen':s>=4?'Kan, met tegenzin':'Neem de bus',tip:x.pp>=50?'Regenbroek of poncho mee. Je jas houdt je benen niet droog.':x.feel<3?'Handschoenen en oorwarmers. Op de fiets voelt het nog kouder.':x.feel<8?'Handschoenen aan. Op de fiets voelt het kouder dan lopend.':x.wind>=30?'Tegenwind. Reken op een paar minuten extra.':x.wind>=20?'Oorwarmers of muts, anders suist het.':'Niks extra nodig.'}; }
+function haar(x){ let l=0; if(x.wind>=15) l++; if(x.wind>=30) l++; if(x.pp>=50) l++; if(x.hum>=88&&x.pp>=30) l++; l=Math.min(3,l); return {l,t:['Blijft zitten','Gaat waaien','Wordt een rommel','Kansloos'],tip:['Doe ermee wat je wilt.','Het gaat bewegen. Pet, muts of elastiekje helpt.',x.pp>=50?'Capuchon op, anders wordt het pluizig.':'Bedek het of zet het vast. Stylen houdt het niet.','Muts of capuchon. Stylen is zonde van je tijd.']}; }
+
+/* ---------- iconen ---------- */
+const ic={
+  sun:`<svg viewBox="0 0 48 48" aria-hidden="true"><g stroke="${INK}" stroke-width="3" stroke-linecap="round"><circle cx="24" cy="24" r="9" fill="#D4A93A"/><path d="M24 5v5M24 38v5M5 24h5M38 24h5M11 11l3.5 3.5M33.5 33.5L37 37M37 11l-3.5 3.5M14.5 33.5L11 37" fill="none"/></g></svg>`,
+  cloud:`<svg viewBox="0 0 48 48" aria-hidden="true"><path d="M14 34 q-8 0 -8 -8 q0 -7 8 -8 q2 -9 11 -9 q9 0 11 9 q7 1 7 8 q0 8 -8 8z" fill="${CREAM}" stroke="${INK}" stroke-width="3" stroke-linejoin="round"/></svg>`,
+  rain:`<svg viewBox="0 0 48 48" aria-hidden="true"><path d="M14 28 q-8 0 -8 -8 q0 -7 8 -8 q2 -8 11 -8 q9 0 11 8 q7 1 7 8 q0 8 -8 8z" fill="#CBD5DA" stroke="${INK}" stroke-width="3" stroke-linejoin="round"/><path d="M16 34l-3 8M25 34l-3 8M34 34l-3 8" stroke="#6E86A6" stroke-width="3.4" stroke-linecap="round"/></svg>`,
+  snow:`<svg viewBox="0 0 48 48" aria-hidden="true"><path d="M14 28 q-8 0 -8 -8 q0 -7 8 -8 q2 -8 11 -8 q9 0 11 8 q7 1 7 8 q0 8 -8 8z" fill="${CREAM}" stroke="${INK}" stroke-width="3" stroke-linejoin="round"/><g fill="#6E86A6"><circle cx="14" cy="38" r="2.6"/><circle cx="24" cy="41" r="2.6"/><circle cx="34" cy="38" r="2.6"/></g></svg>`,
+  wind:n=>`<svg viewBox="0 0 48 48" aria-hidden="true"><g fill="none" stroke="${INK}" stroke-width="3.4" stroke-linecap="round"><path d="M5 16 h22 q7 0 7 -6 q0 -5 -5 -5"/><path d="M5 26 h32 q7 0 7 6 q0 5 -5 5" opacity="${n>0?1:.25}"/><path d="M5 36 h16" opacity="${n>1?1:.25}"/><path d="M5 44 h26" opacity="${n>2?1:.25}"/></g></svg>`,
+  drop:p=>{const y=40-Math.round(p/100*30); return `<svg viewBox="0 0 48 48" aria-hidden="true"><defs><clipPath id="dc${p}"><rect x="0" y="${y}" width="48" height="48"/></clipPath></defs><path d="M24 5 q-13 16 -13 25 a13 13 0 0 0 26 0 q0 -9 -13 -25z" fill="${CREAM}" stroke="${INK}" stroke-width="3" stroke-linejoin="round"/><path d="M24 5 q-13 16 -13 25 a13 13 0 0 0 26 0 q0 -9 -13 -25z" fill="#6E86A6" clip-path="url(#dc${p})"/><path d="M24 5 q-13 16 -13 25 a13 13 0 0 0 26 0 q0 -9 -13 -25z" fill="none" stroke="${INK}" stroke-width="3" stroke-linejoin="round"/></svg>`;},
+  feel:f=>{const c=f<3?'#6E86A6':f<14?'#C9965A':'#C2643A', h=Math.max(4,Math.min(24,(f+5)*.9)); return `<svg viewBox="0 0 48 48" aria-hidden="true"><path d="M19 8 a5 5 0 0 1 10 0 v20 a9 9 0 1 1 -10 0z" fill="${CREAM}" stroke="${INK}" stroke-width="3"/><circle cx="24" cy="35" r="5" fill="${c}"/><rect x="22" y="${32-h}" width="4" height="${h}" fill="${c}"/></svg>`;}
+};
+const wxIcon=x=>x.pp>=50?(x.t<=1?ic.snow:ic.rain):x.code<=1?ic.sun:ic.cloud;
+
+/* ---------- state ---------- */
+const S={place:store.get('place',{name:'Utrecht',lat:52.09,lon:5.12}),char:store.get('char','a'),style:store.get('style','casual'),temp:store.get('temp',store.get('cold',false)?'koud':''),dur:store.get('dur','kort'),hours:DEMO,plan:null,hour:12,tomorrow:false,date:new Date().toISOString().slice(0,10),demo:false,line:''};
+const ch=()=>CHARS.find(c=>c.id===S.char)||CHARS[0], sty=()=>STYLES[S.style]||STYLES.casual;
+const idx=()=>Math.max(0,S.hours.findIndex(x=>x.h===S.hour));
+
+function renderStage(mode){
+  const i=idx(), x=S.hours[i], s=S.plan.st[i], st=sty();
+  $('fig').innerHTML=figureInner(ch(),st,s,mode);
+  const wet=x.pp>=50; $('stage').style.background=wet?'var(--blue)':x.feel<6?'var(--sand)':x.feel<16?'var(--pink)':'var(--olive)';
+  const wv='q52 -60 105 0'+' t105 0'.repeat(5);
+  let w=`<g class="drift" style="animation-duration:${Math.max(2.5,14-x.wind/3).toFixed(1)}s"><path d="M-10 70 ${wv} M-10 200 ${wv} M-10 330 ${wv}" fill="none" stroke="#FFFBF3" stroke-width="16" stroke-linecap="round" opacity=".5"/></g>`;
+  if(wet){ const snow=x.t<=1; w+=`<g class="fall"${snow?' style="animation-duration:2.2s"':''}>`; for(let k=0;k<14;k++){ const px=(k*61)%400, py=(k*97)%380; w+=snow?`<circle cx="${px}" cy="${py}" r="5" fill="#FFFBF3" stroke="${INK}" stroke-width="2"/>`:`<path d="M${px} ${py} l-7 20" stroke="#6E86A6" stroke-width="5" stroke-linecap="round"/>`; } }
+  if(wet) w+='</g>';
+  $('wx').innerHTML=w;
+  $('side').innerHTML=advice(i).map(r=>r.skip?`<p class="skip">${esc(r.skip)}</p>`:`<div class="rowi${r.big?' big':''}${r.off?' off':''}" data-k="${r.k||''}">${r.icon}<div style="min-width:0"><p class="n">${r.nr?`<span class="nr">${r.nr}</span>`:''}${esc(r.name)}</p>${r.note?`<p class="s">${esc(r.note)}</p>`:''}</div></div>`).join('');
+  litT.forEach(clearTimeout); litT=[];
+  for(const q of dressSeq) litT.push(setTimeout(()=>{ document.querySelectorAll(`#side [data-k="${q.k}"]`).forEach(r=>{ r.classList.remove('lit'); void r.offsetWidth; r.classList.add('lit'); }); },q.d*1000+150));
+}
+let litT=[];
+const xIcon={
+  par:`<svg viewBox="0 0 48 48" aria-hidden="true"><g stroke="${INK}" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"><path d="M24 8 q-19 2 -19 19 h38 q0 -17 -19 -19z" fill="#7A2E35"/><path d="M24 27 v11 q0 5 -5 5" fill="none"/></g></svg>`,
+  glove:`<svg viewBox="0 0 48 48" aria-hidden="true"><path d="M14 24 q0 -16 10 -16 q10 0 10 16 v4 q6 -6 9 -2 q2 3 -6 10 v6 h-23z" fill="#C9965A" stroke="${INK}" stroke-width="3" stroke-linejoin="round"/><path d="M14 36 h23" stroke="${INK}" stroke-width="3"/></svg>`
+};
+/* het kledingadvies: van binnen naar buiten, met de details die ertoe doen */
+function advice(i){
+  const pl=S.plan, st=sty(), s=pl.st[i], c=ch(), H=S.hours, rows=[]; let nr=1;
+  const firstH=f=>{ const k=pl.st.findIndex(f); return k<0?null:H[k].h; };
+  // 1 onderlaag
+  if(pl.base==='hemd'){ rows.push({k:'shirt',nr:nr++,icon:pieceSVG('30 140 140 140',()=>gShirt(st,c,'none')),name:'Onderhemd',note:'strak op je huid, dat houdt de warmte vast'});
+    rows.push({k:'shirt',nr:nr++,icon:pieceSVG('30 140 140 140',()=>gShirt(st,c,'long')),name:'Longsleeve',note:pl.minF<-3?'thermo, of twee lagen':''}); }
+  else if(pl.base==='long') rows.push({k:'shirt',nr:nr++,icon:pieceSVG('30 140 140 140',()=>gShirt(st,c,'long')),name:'Longsleeve',note:'geen T-shirt, je armen worden koud'});
+  else rows.push({k:'shirt',nr:nr++,icon:pieceSVG('30 140 140 140',()=>gShirt(st,c,'bare')),name:'T-shirt',note:pl.maxF>=24?'iets luchtigs':''});
+  // 2 middenlaag
+  if(pl.hasTrui){ const off=firstH(x=>!x.trui), dik=pl.dikT;
+    rows.push({k:'trui',nr:nr++,off:!s.trui,icon:pieceSVG('30 140 140 140',()=>gShirt(st,c,'none')+gTrui(st)),name:truiNaam(st,dik),
+      note:!s.trui?'nu uit':(off&&off>H[i].h)?`kan uit om ${off}:00`:off?'nu weer aan':dik?'geen dun truitje vandaag':'hou je de hele dag aan'}); }
+  // 3 jas
+  if(pl.jas){ const v=st[pl.jas], open=firstH(x=>x.jasState!=='dicht'); let note;
+    if(s.jasState==='uit') note='nu uit, wel meenemen'; else if(s.jasState==='open') note='nu open';
+    else if(pl.jas==='regen'&&pl.firstWet) note=`capuchon op om ${pl.firstWet.h}:00`;
+    else if(open&&open>H[i].h) note=`dicht tot ${open}:00`; else if(open) note='nu weer dicht'; else note=pl.maxW>=25?'de hele dag dicht, het waait':'de hele dag dicht';
+    rows.push({k:'jas',nr:nr++,big:1,off:s.jasState==='uit',icon:pieceSVG('30 138 140 '+(v[0]==='coat'||v[0]==='longpuffer'?196:150),()=>gJas(st,pl.jas,s.jasState==='open')),name:JASNAAM[pl.jas],note:v[2]+' · '+note}); }
+  // 4 broek
+  const wijd=st.broek[0]!=='straight';
+  rows.push({k:'broek',nr:nr++,icon:pieceSVG('40 246 120 130',()=>gBroek(st)),name:st.broek[2],note:pl.minF<-2?'met een thermolegging eronder':(pl.wet>=3&&wijd)?'wijde pijpen zuigen water op':''});
+  // 5 schoenen
+  const eigen=st.schoen[2]; let sn=eigen, snote='';
+  if(pl.wet>0&&pl.rMin<0){ sn='Boots met profiel'; snote='het kan glad worden'; }
+  else if(pl.wet>0){ sn='Waterdichte boots'; snote=eigen==='Boots'?'check of ze echt waterdicht zijn':`geen ${eigen.toLowerCase()}, die zijn om ${pl.firstWet.h}:00 doorweekt`; }
+  else if(pl.minF<0){ sn='Boots'; snote='met dikke sokken'; }
+  else if(pl.minF<4) snote=eigen==='Boots'?'met dikke sokken':`${eigen.toLowerCase()} kunnen, maar met dikke sokken`;
+  else if(pl.maxF>=24) snote='iets luchtigs';
+  rows.push({k:'schoen',nr:nr++,icon:pieceSVG('44 330 116 66',()=>gSchoen(st,pl.boots)),name:sn,note:snote});
+  // extra's
+  const thuis=[];
+  if(pl.hasSjaal&&pl.st.some(x=>x.sjaal)){ const af=firstH(x=>!x.sjaal), om=firstH(x=>x.sjaal);
+    rows.push({k:'sjaal',off:!s.sjaal,icon:pieceSVG('54 126 92 96',()=>gSjaal(st)),name:'Sjaal',note:!s.sjaal?(om&&om>H[i].h?`weer om vanaf ${om}:00`:'nu af'):af?`kan af om ${af}:00`:'de hele dag om'}); } else thuis.push('sjaal');
+  if(pl.hasMuts&&pl.st.some(x=>x.muts)) rows.push({k:'muts',off:!s.muts,icon:pieceSVG('36 14 128 72',()=>gMuts(st)),name:'Muts',note:s.muts?'je oren gaan je dankbaar zijn':'nu af'}); else thuis.push('muts');
+  if(pl.gloves) rows.push({icon:xIcon.glove,name:'Handschoenen',note:pl.minF<0?'ook als je loopt':'zeker op de fiets'}); else thuis.push('handschoenen');
+  if(pl.umbrella) rows.push({icon:xIcon.par,name:'Paraplu',note:`nodig om ${pl.firstWet.h}:00`});
+  else thuis.push(pl.wet>0?'paraplu (klapt om, capuchon op)':'paraplu');
+  if(!pl.hasTrui) thuis.unshift('trui'); if(!pl.jas) thuis.unshift('jas');
+  if(thuis.length) rows.push({skip:'Laat thuis: '+thuis.join(', ')});
+  return rows;
+}
+function renderTimeline(){
+  const st=S.plan.st, col={dicht:'#7A2E35',open:'#C9965A',uit:'#8A8F5A'}; let html='', run=1;
+  for(let i=1;i<=st.length;i++){ if(i<st.length&&st[i].jasState===st[i-1].jasState&&st[i].trui===st[i-1].trui) run++; else { const s=st[i-1]; html+=`<i style="flex:${run} 1 0;background:${S.plan.jas?col[s.jasState]:'#8A8F5A'};${s.trui?'':'background-image:repeating-linear-gradient(135deg,rgba(255,251,243,.55) 0 6px,transparent 6px 12px)'}"></i>`; run=1; } }
+  $('bar').innerHTML=html;
+  $('moms').innerHTML=S.plan.moms.length>1?S.plan.moms.map(m=>`<button class="mom" data-h="${m.h}"><span class="dot" style="background:${col[S.plan.st[S.hours.findIndex(x=>x.h===m.h)].jasState]}"></span><b>${m.h}:00</b><span>${esc(m.txt)}</span></button>`).join(''):`<p class="mom"><span>Geen gedoe vandaag. Wat je aantrekt, hou je aan.</span></p>`;
+}
+function renderHour(){
+  const i=idx(), x=S.hours[i];
+  const n=S.hours.length-1; $('thumb').style.left=(i/n*100)+'%'; $('thumb').textContent=x.h; $('scrub').value=x.h;
+  $('tlTime').textContent=x.h+':00';
+  const wl=x.wind<12?0:x.wind<25?1:x.wind<40?2:3;
+  $('scen').innerHTML=`<div class="sc" style="background:var(--cream)">${ic.feel(x.feel)}<p class="lab">Gevoel</p><p class="t">${gevoel(x.feel)}</p><p class="num">${x.wind>=15&&x.t-x.feel>=2?`${Math.round(x.t)}°, door de wind ${Math.round(x.feel)}°`:`voelt als ${Math.round(x.feel)}°`}</p></div>
+  <div class="sc" style="background:var(--blue)">${ic.drop(Math.round(x.pp/5)*5)}<p class="lab">Regen</p><p class="t">${regenT(x.pp)}</p><p class="num">kans ${Math.round(x.pp)}%</p></div>
+  <div class="sc" style="background:var(--olive)">${ic.wind(wl)}<p class="lab">Wind</p><p class="t">${windT(x.wind)}</p><p class="num">${Math.round(x.wind)} km/u</p></div>`;
+  const f=fiets(x), hr=haar(x);
+  $('minis').innerHTML=`<div class="card mini" style="background:var(--pink)"><p class="lab">Fietscijfer</p><p class="h big">${f.s}</p><div class="meter" aria-hidden="true">${[2,4,6,8,10].map(v=>`<i class="${f.s>=v?'on':''}"></i>`).join('')}</div><p class="t">${f.t}</p><p class="tip">${f.tip}</p></div>
+  <div class="card mini" style="background:var(--sand)"><p class="lab">Haar-alarm</p><p class="h big" style="font-size:26px;line-height:1.1;min-height:44px;display:flex;align-items:center">${hr.t[hr.l]}</p><div class="meter" aria-hidden="true">${[1,2,3].map(v=>`<i class="${hr.l>=v?'on':''}"></i>`).join('')}</div><p class="t">${hr.tip[hr.l]}</p></div>`;
+}
+function renderParts(){
+  const parts=[['Ochtend',7,11],['Middag',12,17],['Avond',18,22]];
+  $('parts').innerHTML=parts.map(([n,a,b])=>{ const hs=S.hours.filter(x=>x.h>=a&&x.h<=b); if(!hs.length) return ''; const f=hs.reduce((s,x)=>s+x.feel,0)/hs.length, pp=Math.max(...hs.map(x=>x.pp)); const mid=hs[Math.floor(hs.length/2)], s=S.plan.st[S.hours.indexOf(mid)];
+    const o=[]; if(S.plan.jas) o.push(s.jasState==='uit'?'jas uit':'jas '+s.jasState); else o.push(s.trui?truiNaam(sty(),S.plan.dikT).toLowerCase():'T-shirt'); if(s.sjaal) o.push('sjaal');
+    return `<div class="part">${wxIcon({...mid,pp})}<p class="lab">${n}</p><p class="h" style="font-size:20px">${Math.round(f)}°</p><p class="t">${o.join(', ')}</p></div>`; }).join('');
+}
+function renderAll(mode){
+  S.plan=plan(S.hours);
+  if(!S.hours.some(x=>x.h===S.hour)) S.hour=S.hours[0].h;
+  S.line=verdict(S.hours,S.plan,S.date);
+  $('meta').textContent=S.place.name+' · '+(S.tomorrow?'morgen':'vandaag');
+  const v=$('verdict'); v.textContent=S.line; v.style.animation='none'; void v.offsetWidth; v.style.animation='';
+  $('demoNote').hidden=!S.demo;
+  $('scrub').min=S.hours[0].h; $('scrub').max=S.hours[S.hours.length-1].h;
+  renderStage(mode); renderTimeline(); renderHour(); renderParts(); renderFb();
+}
+async function load(){
+  const cached=store.get('wx',null);
+  if(cached&&cached.key===S.place.lat+','+S.place.lon){ try{ applyData(cached.j); }catch(e){} }
+  try{ const j=await fetchWeather(S.place); store.set('wx',{key:S.place.lat+','+S.place.lon,j}); applyData(j); S.demo=false; }
+  catch(e){ if(!S.live){ track('voorbeeldweer',1); S.demo=true; S.hours=DEMO; S.tomorrow=false; } }
+  const nowH=new Date().getHours(); S.hour=S.tomorrow?8:Math.max(7,Math.min(22,nowH));
+  $('fig').style.visibility='';
+  renderAll('dress');
+}
+function applyData(j){ const d=pickDay(j); if(d.hours.length<6) throw new Error('te weinig uren'); S.hours=d.hours; S.tomorrow=d.tomorrow; S.date=d.date; S.live=true; }
+
+/* ---------- interactie ---------- */
+$('scrub').addEventListener('input',e=>{ track('schuifbalk',1); S.hour=+e.target.value; renderStage('diff'); renderHour(); });
+$('moms').addEventListener('click',e=>{ const b=e.target.closest('[data-h]'); if(!b) return; track('moment-tik',1); S.hour=+b.dataset.h; renderStage('diff'); renderHour(); });
+$('retry').addEventListener('click',()=>{ track('opnieuw-tik'); load(); });
+function openSheet(id){ $(id).classList.add('on'); const f=$(id).querySelector('button'); if(f) f.focus(); }
+function closeSheet(id){ $(id).classList.remove('on'); }
+document.addEventListener('keydown',e=>{ if(e.key==='Escape'){ closeSheet('sheet'); closeSheet('storySheet'); } });
+for(const id of ['sheet','storySheet']) $(id).addEventListener('click',e=>{ if(e.target===$(id)) closeSheet(id); });
+$('placeBtn').addEventListener('click',()=>{ track('instellen-open',1); renderSettings(); openSheet('sheet'); });
+$('sheetX').addEventListener('click',()=>closeSheet('sheet'));
+function renderSettings(){
+  $('heads').innerHTML=CHARS.map(c=>{ SIL=false; return `<button data-c="${c.id}" aria-pressed="${c.id===S.char}" aria-label="Poppetje ${c.id.toUpperCase()}"><svg viewBox="30 6 140 140" aria-hidden="true"><g stroke-linejoin="round" stroke-linecap="round">${hairBack(c,false)}${head(c)}</g></svg></button>`; }).join('');
+  $('styles').innerHTML=Object.entries(STYLES).map(([k,v])=>`<button class="chip" data-s="${k}" aria-pressed="${k===S.style}">${v.label}</button>`).join('');
+  $('q').placeholder='Nu: '+S.place.name+'. Zoek een andere plaats';
+  $('dur').innerHTML=[['kort','Even weg'],['lang','Lang buiten']].map(([k,l])=>`<button class="chip" data-d="${k}" aria-pressed="${k===S.dur}">${l}</button>`).join('');
+  $('coldc').innerHTML=[['koud','Ik heb het snel koud'],['warm','Ik heb het snel warm']].map(([k,l])=>`<button class="chip" data-t="${k}" aria-pressed="${S.temp===k}">${l}</button>`).join('');
+}
+$('dur').addEventListener('click',e=>{ const b=e.target.closest('[data-d]'); if(!b) return; S.dur=b.dataset.d; store.set('dur',S.dur); track('duur-'+S.dur); renderSettings(); renderAll('diff'); });
+$('coldc').addEventListener('click',e=>{ const b=e.target.closest('[data-t]'); if(!b) return; S.temp=S.temp===b.dataset.t?'':b.dataset.t; store.set('temp',S.temp); track('gevoel-'+(S.temp||'normaal')); renderSettings(); renderAll('diff'); });
+/* klopte het: 1 antwoord per dag, geteld met de gevoelstemperatuur in stappen van 2 graden */
+function renderFb(){ const done=store.get('fb','')===S.date; $('fbBtns').hidden=done; $('fbDone').hidden=!done; }
+$('fbBtns').addEventListener('click',e=>{ const b=e.target.closest('[data-f]'); if(!b) return;
+  const f=b.dataset.f, lo=Math.floor(S.plan.rMin/2)*2, n=v=>v<0?'min'+(-v):''+v, lab={tekoud:'te koud',goed:'goed',tewarm:'te warm'}[f];
+  if(!S.demo) track(`klopte_${f}_voelt${n(lo)}-${n(lo+2)}_${S.dur}_${S.temp?'snel'+S.temp:'normaal'}`,0,`Klopte het: ${lab}, voelt ${lo} tot ${lo+2}, ${S.dur==='kort'?'even weg':'lang buiten'}, ${S.temp?'snel '+S.temp:'normaal'}`);
+  store.set('fb',S.date); renderFb(); });
+$('heads').addEventListener('click',e=>{ const b=e.target.closest('[data-c]'); if(!b) return; S.char=b.dataset.c; store.set('char',S.char); track('poppetje-'+S.char); renderSettings(); renderStage('dress'); });
+$('styles').addEventListener('click',e=>{ const b=e.target.closest('[data-s]'); if(!b) return; S.style=b.dataset.s; store.set('style',S.style); track('stijl-'+S.style); renderSettings(); renderAll('dress'); });
+let qT;
+$('q').addEventListener('input',e=>{ clearTimeout(qT); const q=e.target.value.trim(); if(q.length<2){ $('res').innerHTML=''; return; } qT=setTimeout(async()=>{
+  try{ const r=await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(q)}&count=5&language=nl`); const j=await r.json();
+    $('res').innerHTML=(j.results||[]).map(p=>`<button data-lat="${p.latitude}" data-lon="${p.longitude}" data-n="${esc(p.name)}">${esc(p.name)}${p.admin1?', '+esc(p.admin1):''}${p.country_code&&p.country_code!=='NL'?' ('+esc(p.country_code)+')':''}</button>`).join('')||'<p class="foot">Niks gevonden.</p>';
+  }catch(err){ $('res').innerHTML='<p class="foot">Zoeken lukt nu niet. Probeer het later.</p>'; } },300); });
+function setPlace(p){ track('plaats-gewijzigd'); S.place=p; store.set('place',p); S.live=false; $('res').innerHTML=''; $('q').value=''; closeSheet('sheet'); load(); }
+$('res').addEventListener('click',e=>{ const b=e.target.closest('[data-lat]'); if(b) setPlace({name:b.dataset.n,lat:+(+b.dataset.lat).toFixed(2),lon:+(+b.dataset.lon).toFixed(2)}); });
+$('geo').addEventListener('click',()=>{ track('locatie-knop'); if(!navigator.geolocation){ $('res').innerHTML='<p class="foot">Je browser geeft geen locatie door.</p>'; return; }
+  navigator.geolocation.getCurrentPosition(async pos=>{ const lat=+pos.coords.latitude.toFixed(2), lon=+pos.coords.longitude.toFixed(2); setPlace({name:'Hier',lat,lon}); },
+  ()=>{ $('res').innerHTML='<p class="foot">Geen toegang tot je locatie. Zoek je plaats hierboven.</p>'; },{timeout:8000}); });
+
+/* ---------- story ---------- */
+let storyBlob=null;
+async function makeStory(){
+  const W=1080,H=1920, i=idx(), x=S.hours[i], s=S.plan.st[i], wet=x.pp>=50;
+  const bg=wet?'#CBD5DA':x.feel<6?'#E9D9BF':x.feel<16?'#EBCFC6':'#DADDC3';
+  try{ await Promise.all([document.fonts.load('96px "Bagel Fat One"'),document.fonts.load('700 44px Figtree')]); }catch(e){}
+  const c=document.createElement('canvas'); c.width=W; c.height=H; const g=c.getContext('2d');
+  g.fillStyle=bg; g.fillRect(0,0,W,H);
+  g.strokeStyle='rgba(255,251,243,.55)'; g.lineWidth=44; g.lineCap='round';
+  for(const y of [330,820,1310,1800]){ g.beginPath(); g.moveTo(-40,y); for(let k=0;k<5;k++) g.quadraticCurveTo(-40+k*280+140,y-170,-40+(k+1)*280,y); g.stroke(); }
+  if(wet){ g.strokeStyle='#6E86A6'; g.lineWidth=13; for(let k=0;k<22;k++){ const px=(k*173)%W, py=260+(k*241)%1300; g.beginPath(); g.moveTo(px,py); g.lineTo(px-18,py+52); g.stroke(); } }
+  const svg=`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 400" width="540" height="1080">${figureInner(ch(),sty(),s,'none')}</svg>`;
+  const img=new Image(); const url=URL.createObjectURL(new Blob([svg],{type:'image/svg+xml'}));
+  await new Promise((ok,no)=>{ img.onload=ok; img.onerror=no; img.src=url; }).catch(()=>{});
+  try{ g.drawImage(img,270,400,540,1080); }catch(e){}
+  URL.revokeObjectURL(url);
+  const box=(bx,by,bw,bh,r,fill)=>{ g.fillStyle=INK; rr(bx+10,by+10,bw,bh,r); g.fill(); g.fillStyle=fill; rr(bx,by,bw,bh,r); g.fill(); g.lineWidth=7; g.strokeStyle=INK; g.stroke(); };
+  function rr(x0,y0,w,h,r){ g.beginPath(); g.moveTo(x0+r,y0); g.arcTo(x0+w,y0,x0+w,y0+h,r); g.arcTo(x0+w,y0+h,x0,y0+h,r); g.arcTo(x0,y0+h,x0,y0,r); g.arcTo(x0,y0,x0+w,y0,r); g.closePath(); }
+  // zin van de dag
+  g.font='700 54px Figtree, sans-serif'; const words=S.line.split(' '); const lines=[]; let cur='';
+  for(const w of words){ const t=cur?cur+' '+w:w; if(g.measureText(t).width>840&&cur){ lines.push(cur); cur=w; } else cur=t; } lines.push(cur);
+  const bh=70+lines.length*68; box(70,150,940,bh,48,CREAM);
+  g.fillStyle=INK; g.textBaseline='top'; lines.forEach((l,k)=>g.fillText(l,120,188+k*68));
+  // temperatuur en plaats
+  const d=new Date(S.date+'T12:00:00'); const datum=d.toLocaleDateString('nl-NL',{weekday:'long',day:'numeric',month:'long'});
+  box(70,1500,430,250,48,'#7A2E35'); g.fillStyle=CREAM; g.font='190px "Bagel Fat One", sans-serif'; g.fillText(Math.round(x.t)+'°',110,1520);
+  box(540,1500,470,250,48,CREAM); g.fillStyle=INK; g.font='74px "Bagel Fat One", sans-serif'; let pn=S.place.name; while(g.measureText(pn).width>400&&pn.length>3) pn=pn.slice(0,-2); g.fillText(pn,580,1532);
+  const fit=(t,y)=>{ let fs=40; do{ g.font='700 '+fs+'px Figtree, sans-serif'; fs-=2; }while(g.measureText(t).width>400&&fs>22); g.fillText(t,580,y); };
+  fit(datum,1632); fit(x.h+':00 · voelt als '+Math.round(x.feel)+'°',1684);
+  // logo en link
+  g.font='64px "Bagel Fat One", sans-serif'; g.fillStyle=INK; g.fillText('Kleerweer',70,1800);
+  g.font='700 36px Figtree, sans-serif'; const link=(location.protocol.startsWith('http')&&!/localhost|127\.0|claude/.test(location.host))?location.host+location.pathname.replace(/\/(index\.html)?$/,''):'kleerweer'; g.textAlign='right'; g.fillText(link,1010,1822); g.textAlign='left';
+  return new Promise(ok=>c.toBlob(b=>ok({blob:b,data:c.toDataURL('image/png')}),'image/png'));
+}
+$('storyBtn').addEventListener('click',async()=>{ const b=$('storyBtn'); b.disabled=true; b.textContent='Even tekenen';
+  try{ const r=await makeStory(); storyBlob=r.blob; $('storyImg').src=r.data; openSheet('storySheet'); track('story-gemaakt'); }catch(e){ }
+  b.disabled=false; b.textContent='Maak je story'; });
+$('storyX').addEventListener('click',()=>closeSheet('storySheet'));
+$('shareBtn').addEventListener('click',async()=>{
+  if(!storyBlob) return; track('story-deel-tik'); const file=new File([storyBlob],'kleerweer.png',{type:'image/png'});
+  try{ if(navigator.canShare&&navigator.canShare({files:[file]})){ await navigator.share({files:[file],title:'Kleerweer'}); track('story-gedeeld'); return; } }catch(e){ if(e&&e.name==='AbortError') return; }
+  try{ const a=document.createElement('a'); a.href=URL.createObjectURL(storyBlob); a.download='kleerweer.png'; document.body.appendChild(a); a.click(); a.remove(); track('story-bewaard'); }catch(e){}
+  $('storyHint').textContent='Houd het plaatje ingedrukt en kies Bewaar. Daarna zet je het in je story.';
+});
+
+/* ---------- installeren ---------- */
+const standalone=window.matchMedia('(display-mode: standalone)').matches||navigator.standalone;
+if(/iphone|ipad|ipod/i.test(navigator.userAgent)&&!standalone&&!store.get('inst',false)) $('installNote').hidden=false;
+$('installX').addEventListener('click',()=>{ $('installNote').hidden=true; store.set('inst',true); track('install-tip-oke'); });
+if('serviceWorker' in navigator&&location.protocol==='https:') navigator.serviceWorker.register('sw.js').catch(()=>{});
+
+/* komen mensen terug: tel op de hoeveelste dag iemand de app gebruikt. Het getal blijft op de telefoon, alleen 'gebruiksdag-3' gaat naar de teller. */
+(()=>{ const d=new Date().toISOString().slice(0,10), v=store.get('visit',{d:'',n:0});
+  if(v.d!==d){ v.n++; v.d=d; store.set('visit',v); track('gebruiksdag-'+(v.n>21?'22plus':v.n)); }
+  track(standalone?'open-vanaf-beginscherm':'open-in-browser',1); })();
+
+/* afhaken: tel per keer openen tot waar mensen kijken. Volgorde van boven naar onder. */
+(()=>{ if(!('IntersectionObserver' in window)) return;
+  const parts=[['#stage','1-advies'],['.tl','2-tijdlijn'],['#scen','3-weer'],['#minis','4-fiets-haar'],['#parts','5-dagdelen'],['#fb','6-klopte'],['#storyBtn','7-story-knop']];
+  const io=new IntersectionObserver(es=>{ for(const e of es) if(e.isIntersecting){ track('gezien-'+e.target.dataset.seen,1); io.unobserve(e.target); } },{threshold:.5});
+  for(const [sel,name] of parts){ const el=document.querySelector(sel); if(el){ el.dataset.seen=name; io.observe(el); } } })();
+
+$('fig').style.visibility='hidden';
+$('fig').addEventListener('click',()=>{ track('aankleden-tik'); renderStage('dress'); });
+renderAll('none');
+load();
+</script>
+</body>
+</html>
