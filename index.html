@@ -5,7 +5,7 @@
 <title>Kleerweer</title>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="description" content="Kleerweer zegt wat je aantrekt en wanneer je laagje uit of aan kan.">
-<meta name="theme-color" content="#F4EEE4">
+<meta name="theme-color" content="#F3ECDD">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Kleerweer">
@@ -14,203 +14,232 @@
 <link rel="apple-touch-icon" href="icons/icon-180.png">
 <link rel="icon" type="image/png" href="icons/icon-192.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bagel+Fat+One&family=Figtree:wght@500;600;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=DM+Mono:wght@500&family=Inter+Tight:wght@500;600;700&display=swap">
 <style>
-:root{--ink:#2A2320;--cream:#FFFBF3;--oat:#F4EEE4;--pink:#EBCFC6;--olive:#DADDC3;--sand:#E9D9BF;--blue:#CBD5DA;--bord:#7A2E35;--camel:#C9965A;--green:#8A8F5A}
+:root{--ink:#1E1A17;--paper:#F3ECDD;--white:#FFFDF6;--cream:#FFFDF6;--bord:#6E1F2B;--pop:#E0662F;--blue:#B4C3C6;--sand:#D8C08F;--pink:#D9A493;--olive:#A5AA6C}
 *{box-sizing:border-box}
 [hidden]{display:none!important}
 html{-webkit-text-size-adjust:100%}
-body{margin:0;background:var(--oat);color:var(--ink);font-family:Figtree,system-ui,sans-serif;font-weight:500;-webkit-tap-highlight-color:transparent}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:'Inter Tight',system-ui,sans-serif;font-weight:500;-webkit-tap-highlight-color:transparent}
 h1,h2,h3,p{margin:0}
 button{font:inherit;color:inherit;cursor:pointer}
-.h{font-family:'Bagel Fat One','Arial Black',sans-serif;font-weight:400}
-.wrap{max-width:460px;margin:0 auto;padding:calc(14px + env(safe-area-inset-top)) 18px calc(28px + env(safe-area-inset-bottom));display:flex;flex-direction:column;gap:18px}
-.card{border:3px solid var(--ink);box-shadow:5px 5px 0 var(--ink);border-radius:26px;background:var(--cream)}
-.lab{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em}
-.top{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.an,.h{font-family:Anton,'Arial Narrow',Impact,sans-serif;font-weight:400;text-transform:uppercase;letter-spacing:.01em}
+.mo{font-family:'DM Mono',ui-monospace,monospace;font-weight:500;text-transform:uppercase;letter-spacing:.06em;font-size:11px}
+.wrap{max-width:460px;margin:0 auto;padding:calc(14px + env(safe-area-inset-top)) 14px calc(104px + env(safe-area-inset-bottom));display:flex;flex-direction:column;gap:12px}
+.view{display:flex;flex-direction:column;gap:12px}
+.top{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:0 4px}
 .brand{display:flex;align-items:center;gap:8px}
-.brand svg{width:34px;height:34px}
-.brand span{font-size:24px;line-height:1}
-.pill{border:3px solid var(--ink);border-radius:999px;background:var(--cream);padding:8px 14px;font-weight:700;font-size:14px;min-height:44px;display:inline-flex;align-items:center;gap:6px}
-.gear{width:52px;height:52px;padding:0;justify-content:center;box-shadow:3px 3px 0 var(--ink)}
-.gear svg{width:28px;height:28px}
-.pill:active,.btn:active{transform:translate(2px,2px)}
-.meta{font-size:12px;font-weight:700;padding-left:6px;margin-bottom:4px}
-.bubble{font-size:23px;line-height:1.25;font-weight:700;border-radius:22px 22px 22px 6px;padding:14px 18px;animation:rise .5s cubic-bezier(.3,1.5,.5,1) both}
-@keyframes rise{from{opacity:0;transform:translateY(14px) rotate(-2deg)}to{opacity:1;transform:none}}
-.stage{background:var(--pink);padding:12px 12px 12px 4px;display:flex;align-items:center;gap:6px;transition:background .4s;position:relative;overflow:hidden}
-  .stage svg.fig{width:40%;height:auto;flex-shrink:0;position:relative}
-.stage .side{flex:1 1 0;min-width:0;display:flex;flex-direction:column;gap:6px;position:relative}
-.wx{position:absolute;inset:0;pointer-events:none}
-.tile{border:3px solid var(--ink);border-radius:18px;background:var(--cream);padding:6px 4px 7px;display:flex;flex-direction:column;align-items:center;gap:2px;text-align:center;min-width:0}
-.tile svg{width:44px;height:44px;flex-shrink:0}
-.tile.big{align-items:flex-start;text-align:left;padding:8px 10px 10px;gap:2px;transform:rotate(1.5deg)}
-.tile.big svg{width:100%;height:92px}
-.tile .n{font-size:12px;font-weight:700;line-height:1.15}
-.tile.big .n{font-size:19px}
-.tile.off{opacity:.45}
-.tile .s{font-size:11px;font-weight:700}
-.tiles{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}
-.rowi{display:flex;gap:7px;align-items:center;border:3px solid var(--ink);border-radius:16px;background:var(--cream);padding:5px 8px 5px 5px;min-width:0}
-.rowi svg{width:36px;height:36px;flex-shrink:0}
-.rowi .n{font-size:14px;font-weight:700;line-height:1.15}
-.rowi .s{font-size:11.5px;font-weight:600;line-height:1.2;margin-top:1px}
-.rowi .nr{display:inline-flex;width:18px;height:18px;border-radius:50%;background:var(--ink);color:var(--cream);font-size:11px;font-weight:700;align-items:center;justify-content:center;margin-right:4px;vertical-align:1px}
-.rowi.big{padding:7px 9px 7px 6px}
-.rowi.big svg{width:52px;height:52px}
-.rowi.big .n{font-family:'Bagel Fat One','Arial Black',sans-serif;font-weight:400;font-size:17px}
+.brand svg{width:44px;height:44px}
+.brand span{font-size:30px;line-height:1}
+.pill{border:2px solid var(--ink);border-radius:999px;background:none;padding:0 14px;min-height:44px;max-width:52%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pill:active,.btn:active,.popb:active{transform:translate(2px,2px)}
+.hero{background:var(--bord);color:var(--paper);border-radius:30px;padding:20px 20px 22px;position:relative;overflow:hidden}
+.hero .sun{position:absolute;right:-46px;top:-46px;width:170px;height:170px;border-radius:50%;background:var(--pop)}
+.hero .st{position:absolute;inset:10px;border:2px dashed rgba(243,236,221,.45);border-radius:22px;pointer-events:none}
+.hero .in{position:relative}
+.hero .rowt{display:flex;align-items:flex-end;gap:14px;margin-top:6px}
+.hero .big{font-size:150px;line-height:.9}
+.hero .f{font-size:46px;line-height:1}
+#verdict{font-size:30px;line-height:1.08;margin-top:14px;animation:rise .5s cubic-bezier(.3,1.5,.5,1) both}
+@keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.g3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.tile{border:2px solid var(--ink);border-radius:20px;padding:10px 12px;background:var(--white);text-align:left;min-height:44px}
+.tile[aria-pressed=true]{background:var(--ink);color:var(--paper)}
+.tile .t{font-size:38px;line-height:1.05;display:block}
+.tile .d{font-size:12.5px;font-weight:600;line-height:1.2;display:block}
+.sech{display:flex;align-items:flex-end;justify-content:space-between;gap:8px;padding:6px 4px 0}
+.sech h2,.sec{font-size:28px;line-height:1}
+.popb{border:0;background:var(--pop);border-radius:999px;padding:0 14px;min-height:44px}
+.outfit{display:grid;grid-template-columns:38% minmax(0,1fr);gap:10px;align-items:start}
+.stage{border:2px solid var(--ink);border-radius:26px;padding:10px 4px 8px;position:sticky;top:10px;overflow:hidden;transition:background .4s;display:flex;flex-direction:column;align-items:center;gap:4px;background:var(--olive)}
+.stage .wx{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.stage svg.fig{width:100%;height:auto;position:relative}
+.stage .mo{position:relative}
+.side{display:flex;flex-direction:column;gap:7px;min-width:0}
+.rowi{display:flex;align-items:center;gap:8px;border:2px solid var(--ink);border-radius:16px;padding:6px 9px;background:var(--white);min-width:0}
+.rowi svg{width:38px;height:38px;flex-shrink:0}
+.rowi .n{font-family:Anton,'Arial Narrow',Impact,sans-serif;text-transform:uppercase;font-size:17px;line-height:1.1}
+.rowi .s{font-size:12px;line-height:1.25;color:#5A4F47}
+.rowi.big{background:var(--ink);color:var(--paper)}
+.rowi.big .s{color:#D9CFBD}
 .rowi.off{opacity:.5}
-.skip{font-size:12px;font-weight:700;line-height:1.3;border:2.5px dashed var(--ink);border-radius:14px;padding:6px 9px}
+.rowi.lit{animation:lit .9s ease-out}
+@keyframes lit{0%{transform:none}30%{transform:scale(1.05);box-shadow:4px 4px 0 var(--pop)}100%{transform:none}}
+.skip{font-size:12.5px;font-weight:600;line-height:1.3;border:2px dashed var(--ink);border-radius:14px;padding:7px 10px}
 .pop{animation:pop .5s cubic-bezier(.3,1.6,.5,1) both;transform-box:fill-box;transform-origin:center}
 @keyframes pop{from{opacity:0;transform:translateY(-16px) scale(.88)}to{opacity:1;transform:none}}
-.tl{background:var(--sand);padding:14px 16px 16px;display:flex;flex-direction:column;gap:12px}
-.row{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
-.bar{position:relative;height:26px;border:3px solid var(--ink);border-radius:14px;display:flex;overflow:hidden;background:var(--cream)}
-.bar i{display:block;height:100%;border-right:3px solid var(--ink)}
-.bar i:last-child{border-right:0}
-.barwrap{position:relative;padding:8px 0}
-.barwrap input{position:absolute;left:-4px;right:-4px;top:0;width:calc(100% + 8px);height:42px;margin:0;opacity:0;cursor:pointer}
-.thumb{position:absolute;top:1px;width:40px;height:40px;margin-left:-20px;border-radius:50%;background:var(--cream);border:3px solid var(--ink);box-shadow:2px 2px 0 var(--ink);pointer-events:none;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;transition:left .15s}
-.barwrap input:focus-visible + .thumb{outline:3px solid var(--bord);outline-offset:2px}
-.ticks{display:flex;justify-content:space-between;font-size:11px;font-weight:700}
-.moms{display:flex;flex-direction:column;gap:6px}
-.mom{border:0;background:none;padding:6px 0;display:flex;align-items:center;gap:8px;font-size:15px;font-weight:700;text-align:left;min-height:32px}
-.mom b{font-family:'Bagel Fat One','Arial Black',sans-serif;font-weight:400;font-size:17px;min-width:52px}
-.dot{width:14px;height:14px;border-radius:50%;border:2.5px solid var(--ink);flex-shrink:0}
-.g3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
-.g2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
-.sc{border:3px solid var(--ink);border-radius:20px;padding:10px 10px 12px;display:flex;flex-direction:column;gap:4px;min-height:132px}
-.sc svg{width:44px;height:44px}
-.sc .t{font-family:'Bagel Fat One','Arial Black',sans-serif;font-size:16px;line-height:1.12}
-.sc .num{font-size:11px;font-weight:700;margin-top:auto}
-.mini{padding:12px 14px 14px;display:flex;flex-direction:column;gap:4px}
-.mini .big{font-size:44px;line-height:1}
-.mini .t{font-size:15px;font-weight:700;line-height:1.25}
-.meter{display:flex;gap:4px;margin:4px 0}
-.meter i{flex:1;height:10px;border:2.5px solid var(--ink);border-radius:6px;background:var(--cream)}
-.meter i.on{background:var(--bord)}
-.part{border:3px solid var(--ink);border-radius:20px;padding:10px;display:flex;flex-direction:column;gap:2px;background:var(--cream)}
-.part svg{width:34px;height:34px}
-.part .t{font-size:13px;font-weight:700;line-height:1.2}
-.sec{font-size:22px}
-.btn{border:3px solid var(--ink);box-shadow:5px 5px 0 var(--ink);border-radius:22px;background:var(--bord);color:var(--cream);font-family:'Bagel Fat One','Arial Black',sans-serif;font-size:22px;padding:16px 18px;width:100%;min-height:60px}
-.btn.alt{background:var(--cream);color:var(--ink);font-size:17px;min-height:48px;padding:10px 14px;box-shadow:3px 3px 0 var(--ink)}
-.note{font-size:13px;font-weight:600;border:3px dashed var(--ink);border-radius:18px;padding:10px 14px;display:flex;gap:10px;align-items:center;justify-content:space-between}
-.note button{border:0;background:none;font-weight:700;text-decoration:underline;min-height:44px;padding:0 4px}
-.foot{font-size:12px;font-weight:600;text-align:center;line-height:1.5}
-.foot a{color:var(--ink)}
-.sheet{position:fixed;inset:0;background:rgba(42,35,32,.45);display:none;align-items:flex-end;justify-content:center;z-index:10}
-.sheet.on{display:flex}
-.sheet .in{background:var(--oat);border:3px solid var(--ink);border-bottom:0;border-radius:28px 28px 0 0;width:100%;max-width:460px;max-height:92vh;overflow:auto;padding:18px 18px calc(22px + env(safe-area-inset-bottom));display:flex;flex-direction:column;gap:14px;animation:up .3s ease-out both}
-@keyframes up{from{transform:translateY(40px);opacity:0}to{transform:none;opacity:1}}
-.field{border:3px solid var(--ink);border-radius:16px;background:var(--cream);padding:12px 14px;font:inherit;font-weight:600;font-size:16px;width:100%;color:var(--ink)}
-.res{display:flex;flex-direction:column;gap:6px}
-.res button{border:3px solid var(--ink);border-radius:14px;background:var(--cream);padding:10px 12px;text-align:left;font-weight:700;min-height:44px}
-.chips{display:flex;gap:8px;flex-wrap:wrap}
-.chip{border:3px solid var(--ink);border-radius:999px;background:var(--cream);padding:8px 14px;font-weight:700;min-height:44px}
-.chip[aria-pressed=true]{background:var(--bord);color:var(--cream)}
-.heads{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px}
-.heads button{border:3px solid var(--ink);border-radius:18px;background:var(--cream);padding:4px;min-height:44px}
-.heads button[aria-pressed=true]{background:var(--pink);box-shadow:3px 3px 0 var(--ink)}
-.heads svg{width:100%;height:auto;display:block}
-.storyimg{width:100%;border:3px solid var(--ink);border-radius:18px;display:block}
 .dress{animation:dress .65s cubic-bezier(.3,1.4,.5,1) both;transform-box:fill-box;transform-origin:50% 0}
 @keyframes dress{0%{opacity:0;transform:translateY(-46px) scale(1.06,.55)}55%{opacity:1}100%{opacity:1;transform:none}}
-.rowi.lit{animation:lit .9s ease-out}
-@keyframes lit{0%{transform:none}30%{transform:scale(1.05);background:#FFE9B8}100%{transform:none}}
 #fig{animation:breathe 3.4s ease-in-out infinite;cursor:pointer}
 @keyframes breathe{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
 .drift{animation:drift linear infinite}
 @keyframes drift{to{transform:translateX(-105px)}}
 .fall{animation:fall .9s linear infinite}
 @keyframes fall{from{transform:translate(4px,-26px)}to{transform:translate(-4px,26px)}}
-.mini .tip{font-size:13px;font-weight:600;line-height:1.3}
-@media (prefers-reduced-motion:reduce){.pop,.bubble,.sheet .in,.dress,.rowi.lit,#fig,.drift,.fall{animation:none}.thumb{transition:none}}
+.card{border:2px solid var(--ink);border-radius:26px;background:var(--white)}
+.tl{padding:14px 16px 16px;display:flex;flex-direction:column;gap:12px}
+.row{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.bar{position:relative;height:26px;border:2px solid var(--ink);border-radius:14px;display:flex;overflow:hidden;background:var(--white)}
+.bar i{display:block;height:100%;border-right:2px solid var(--ink)}
+.bar i:last-child{border-right:0}
+.barwrap{position:relative;padding:8px 0}
+.barwrap input{position:absolute;left:-4px;right:-4px;top:0;width:calc(100% + 8px);height:42px;margin:0;opacity:0;cursor:pointer}
+.thumb{position:absolute;top:1px;width:40px;height:40px;margin-left:-20px;border-radius:50%;background:var(--pop);border:2px solid var(--ink);box-shadow:2px 2px 0 var(--ink);pointer-events:none;display:flex;align-items:center;justify-content:center;font-family:Anton,sans-serif;font-size:16px;transition:left .15s}
+.barwrap input:focus-visible + .thumb{outline:3px solid var(--bord);outline-offset:2px}
+.ticks{display:flex;justify-content:space-between}
+.moms{display:flex;flex-direction:column;gap:2px}
+.mom{border:0;background:none;padding:6px 0;display:flex;align-items:center;gap:8px;font-size:15px;font-weight:600;text-align:left;min-height:44px}
+.mom b{font-family:Anton,sans-serif;font-weight:400;font-size:19px;min-width:54px}
+.dot{width:14px;height:14px;border-radius:50%;border:2px solid var(--ink);flex-shrink:0}
+.sc{border:2px solid var(--ink);border-radius:20px;padding:10px;display:flex;flex-direction:column;gap:3px;background:var(--white);min-height:128px}
+.sc svg{width:40px;height:40px}
+.sc .t{font-family:Anton,'Arial Narrow',Impact,sans-serif;text-transform:uppercase;font-size:16px;line-height:1.12}
+.sc .num{font-size:11.5px;font-weight:700;margin-top:auto}
+.etk{background:var(--ink);color:var(--paper);border-radius:30px;padding:18px 14px 16px}
+.etk h2{font-size:24px;line-height:1}
+.g4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;margin-top:14px}
+.sym{display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center}
+.sym i{width:58px;height:58px;border:2px solid var(--paper);border-radius:14px;display:flex;align-items:center;justify-content:center}
+.sym svg{width:34px;height:34px}
+.sym .mo{font-size:10px;line-height:1.3}
+.tips{margin-top:12px;font-size:13.5px;line-height:1.4;display:flex;flex-direction:column;gap:4px;border-top:2px dashed rgba(243,236,221,.4);padding-top:10px}
+.fb{padding:14px 16px;display:flex;flex-direction:column;gap:10px;background:var(--olive)}
+.fb .t{font-size:15px;font-weight:700}
+.chips{display:flex;gap:8px;flex-wrap:wrap}
+.chip{border:2px solid var(--ink);border-radius:999px;background:var(--white);padding:8px 14px;font-weight:700;min-height:44px}
+.chip[aria-pressed=true]{background:var(--ink);color:var(--paper)}
+.btn{font-family:Anton,'Arial Narrow',Impact,sans-serif;text-transform:uppercase;font-size:24px;border:2px solid var(--ink);border-radius:22px;background:var(--pop);color:var(--ink);min-height:62px;box-shadow:4px 4px 0 var(--ink);width:100%}
+.btn.alt{background:var(--white);font-size:18px;min-height:48px;box-shadow:3px 3px 0 var(--ink)}
+.note{font-size:13px;font-weight:600;border:2px dashed var(--ink);border-radius:18px;padding:10px 14px;display:flex;gap:10px;align-items:center;justify-content:space-between}
+.note button{border:0;background:none;font-weight:700;text-decoration:underline;min-height:44px;padding:0 4px}
+.foot{font-size:12px;font-weight:600;text-align:center;line-height:1.5}
+.foot a{color:var(--ink)}
+.nav{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(10px + env(safe-area-inset-bottom));width:min(432px,calc(100% - 28px));background:var(--ink);border-radius:999px;height:60px;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));align-items:center;padding:0 6px;z-index:5}
+.nav button{border:0;background:none;color:var(--paper);height:48px;border-radius:999px}
+.nav button[aria-current=page]{background:var(--paper);color:var(--ink)}
+.wk{display:flex;align-items:center;gap:10px;border:2px solid var(--ink);border-radius:20px;padding:8px 12px;background:var(--white)}
+.wk:first-child{background:var(--ink);color:var(--paper)}
+.wk .d{width:56px;flex-shrink:0}
+.wk .d b{font-family:Anton,sans-serif;font-weight:400;font-size:28px;line-height:1;display:block}
+.wk svg{width:46px;height:56px;flex-shrink:0}
+.wk .n{font-family:Anton,'Arial Narrow',Impact,sans-serif;text-transform:uppercase;font-size:19px;line-height:1.1}
+.wk .s{font-size:12.5px;line-height:1.3}
+.looks{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.look{border:2px solid var(--ink);border-radius:20px;background:var(--olive);padding:6px 2px 8px;text-align:center}
+.look[aria-pressed=true]{background:var(--pop);box-shadow:3px 3px 0 var(--ink)}
+.look svg{width:100%;height:auto;display:block}
+.field{border:2px solid var(--ink);border-radius:16px;background:var(--white);padding:12px 14px;font:inherit;font-weight:600;font-size:16px;width:100%;color:var(--ink)}
+.res{display:flex;flex-direction:column;gap:6px}
+.res button{border:2px solid var(--ink);border-radius:14px;background:var(--white);padding:10px 12px;text-align:left;font-weight:700;min-height:44px}
+.heads{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px}
+.heads button{border:2px solid var(--ink);border-radius:18px;background:var(--white);padding:4px;min-height:44px}
+.heads button[aria-pressed=true]{background:var(--pop);box-shadow:3px 3px 0 var(--ink)}
+.heads svg{width:100%;height:auto;display:block}
+.sheet{position:fixed;inset:0;background:rgba(30,26,23,.5);display:none;align-items:flex-end;justify-content:center;z-index:10}
+.sheet.on{display:flex}
+.sheet .in{background:var(--paper);border:2px solid var(--ink);border-bottom:0;border-radius:28px 28px 0 0;width:100%;max-width:460px;max-height:92vh;overflow:auto;padding:18px 18px calc(22px + env(safe-area-inset-bottom));display:flex;flex-direction:column;gap:14px;animation:up .3s ease-out both}
+@keyframes up{from{transform:translateY(40px);opacity:0}to{transform:none;opacity:1}}
+.storyimg{width:100%;border:2px solid var(--ink);border-radius:18px;display:block}
+@media (prefers-reduced-motion:reduce){.pop,.dress,.rowi.lit,#fig,.drift,.fall,#verdict,.sheet .in{animation:none}.thumb{transition:none}}
 </style>
 </head>
 <body>
 <div class="wrap" id="app">
   <div class="top">
     <div class="brand">
-      <svg viewBox="0 0 72 72" aria-hidden="true"><g stroke="#2A2320" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="64" height="64" rx="18" fill="#7A2E35"/><path d="M36 26 q-1 -5 3 -7 q6 -1 6 -6 q0 -5 -6 -5" fill="none" stroke="#FFFBF3"/><path d="M36 26 L56 40 q3 4 -2 4 H18 q-5 0 -2 -4 Z" fill="#FFFBF3"/><path d="M36 50 q-5 7 0 10 q5 -3 0 -10z" fill="#C9965A"/></g></svg>
-      <span class="h">Kleerweer</span>
+      <svg viewBox="0 0 44 44" aria-hidden="true"><g stroke="#1E1A17" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round"><path d="M10 4 h24 l6 8 v28 h-36 v-28z" fill="#E0662F"/><circle cx="22" cy="10" r="2.6" fill="#F3ECDD"/><path d="M14 33 q-5 0 -5 -5 q0 -4 5 -5 q1 -6 8 -6 q7 0 8 6 q5 1 5 5 q0 5 -5 5z" fill="#F3ECDD"/></g></svg>
+      <span class="an">Kleerweer</span>
     </div>
-    <button class="pill gear" id="placeBtn" aria-haspopup="dialog" aria-label="Instellingen"><svg viewBox="0 0 24 24" aria-hidden="true" fill="#FFFBF3" stroke="#2A2320" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/><circle cx="12" cy="12" r="3.2" fill="#C9965A"/></svg></button>
+    <button class="pill mo" id="placeBtn">Utrecht · wijzig</button>
   </div>
 
-  <div id="demoNote" class="note" hidden><span>Geen verbinding met het weerbericht. Dit is voorbeeldweer.</span><button id="retry">Opnieuw</button></div>
-
-  <section aria-live="polite">
-    <p class="meta" id="meta">Kleerweer · vandaag</p>
-    <h1 class="card bubble" id="verdict">Even kijken wat het buiten doet.</h1>
-  </section>
-
-  <div class="row" style="margin-bottom:-8px"><h2 class="h sec">Dit trek je aan</h2><p class="lab">van binnen naar buiten</p></div>
-  <section class="card stage" id="stage" aria-label="Je outfit van vandaag">
-    <svg class="wx" id="wx" viewBox="0 0 400 400" preserveAspectRatio="none" aria-hidden="true"></svg>
-    <svg class="fig" id="fig" viewBox="0 0 200 400" role="img" aria-label="Poppetje in de outfit van dit moment"></svg>
-    <div class="side" id="side"></div>
-  </section>
-
-  <section class="card tl" aria-label="Laagjes-tijdlijn">
-    <div class="row"><h2 class="h sec">Laagjes vandaag</h2><p class="lab" id="tlTime">nu</p></div>
-    <div>
-      <div class="barwrap">
-        <div class="bar" id="bar"></div>
-        <input type="range" id="scrub" min="7" max="22" step="1" value="12" aria-label="Schuif door de dag">
-        <div class="thumb" id="thumb">12</div>
+  <div class="view" id="v-today">
+    <div id="demoNote" class="note" hidden><span>Geen verbinding met het weerbericht. Dit is voorbeeldweer.</span><button id="retry">Opnieuw</button></div>
+    <section class="hero" aria-live="polite">
+      <div class="sun"></div><div class="st"></div>
+      <div class="in">
+        <p class="mo" id="meta">Vandaag</p>
+        <div class="rowt"><p class="an big" id="heroT">–</p><div style="padding-bottom:10px"><p class="mo">Voelt als</p><p class="an f" id="heroF">–</p><p class="mo" id="heroW">Wind</p></div></div>
+        <h1 class="an" id="verdict">Even kijken wat het buiten doet.</h1>
       </div>
-      <div class="ticks"><span>7:00</span><span>12:00</span><span>17:00</span><span>22:00</span></div>
-    </div>
-    <div class="moms" id="moms"></div>
-  </section>
-
-  <section class="g3" id="scen" aria-label="Het weer op dit moment"></section>
-  <section class="g2" id="minis"></section>
-
-  <section>
-    <h2 class="h sec" style="margin-bottom:10px">Per dagdeel</h2>
+    </section>
     <div class="g3" id="parts"></div>
-  </section>
 
-  <section class="card mini" id="fb" style="background:var(--olive);gap:10px">
-    <p class="lab">Klopte het advies</p>
-    <div class="chips" id="fbBtns"><button class="chip" data-f="tekoud">Te koud</button><button class="chip" data-f="goed">Goed</button><button class="chip" data-f="tewarm">Te warm</button></div>
-    <p class="t" id="fbDone" hidden>Dank je. Hiermee wordt het advies beter.</p>
-  </section>
+    <div class="sech"><h2 class="an">Vandaag aan</h2><button class="popb mo" id="shuffle">Andere outfit</button></div>
+    <section class="outfit" aria-label="Je outfit van vandaag">
+      <div class="stage" id="stage">
+        <svg class="wx" id="wx" viewBox="0 0 400 400" preserveAspectRatio="none" aria-hidden="true"></svg>
+        <p class="mo" id="lookLab">Look 1 van 3</p>
+        <svg class="fig" id="fig" viewBox="0 0 200 400" role="img" aria-label="Poppetje in de outfit van dit moment. Tik om opnieuw aan te kleden."></svg>
+      </div>
+      <div class="side" id="side"></div>
+    </section>
 
-  <section style="display:flex;flex-direction:column;gap:10px">
+    <section class="card tl" aria-label="Je jas door de dag">
+      <div class="row"><h2 class="an sec">Je jas vandaag</h2><p class="mo" id="tlTime">nu</p></div>
+      <div>
+        <div class="barwrap">
+          <div class="bar" id="bar"></div>
+          <input type="range" id="scrub" min="7" max="22" step="1" value="12" aria-label="Schuif door de dag">
+          <div class="thumb" id="thumb">12</div>
+        </div>
+        <div class="ticks mo"><span>7:00</span><span>12:00</span><span>17:00</span><span>22:00</span></div>
+      </div>
+      <div class="moms" id="moms"></div>
+    </section>
+
+    <section class="etk" id="minis" aria-label="Etiket van de dag"></section>
+    <section class="g3" id="scen" aria-label="Het weer op dit moment"></section>
+
+    <section class="card fb" id="fb">
+      <p class="mo">Klopte het advies</p>
+      <div class="chips" id="fbBtns"><button class="chip" data-f="tekoud">Te koud</button><button class="chip" data-f="goed">Goed</button><button class="chip" data-f="tewarm">Te warm</button></div>
+      <p class="t" id="fbDone" hidden>Dank je. Hiermee wordt het advies beter.</p>
+    </section>
+
     <button class="btn" id="storyBtn">Maak je story</button>
-  </section>
+    <div id="installNote" class="note" hidden><span>Zet Kleerweer op je beginscherm: tik op ••• naast de adresbalk, dan op Delen en dan op Zet op beginscherm.</span><button id="installX">Oké</button></div>
+    <p class="foot">We zeggen alleen wanneer je jas uit kan en je paraplu mee moet.<br>Geen advertenties, geen webshop, geen account.<br>We tellen alleen bezoeken en tikken, zonder cookies en zonder te weten wie je bent.<br>Weerdata: <a href="https://open-meteo.com/">Open-Meteo</a></p>
+  </div>
 
-  <div id="installNote" class="note" hidden><span>Zet Kleerweer op je beginscherm: tik op ••• naast de adresbalk, dan op Delen en dan op Zet op beginscherm.</span><button id="installX">Oké</button></div>
+  <div class="view" id="v-week" hidden>
+    <div class="sech"><h2 class="an">Deze week</h2><p class="mo">welke jas wanneer</p></div>
+    <div class="view" id="week"></div>
+  </div>
 
-  <p class="foot">We zeggen alleen wanneer je jas uit kan en je paraplu mee moet.<br>Geen advertenties, geen webshop, geen account.<br>We tellen alleen bezoeken en tikken, zonder cookies en zonder te weten wie je bent.<br>Weerdata: <a href="https://open-meteo.com/">Open-Meteo</a></p>
-</div>
+  <div class="view" id="v-kast" hidden>
+    <div class="sech"><h2 class="an">Je kast</h2><p class="mo">stijl en look</p></div>
+    <p class="mo">Jouw stijl</p>
+    <div class="chips" id="styles"></div>
+    <p class="mo">Look van vandaag</p>
+    <div class="looks" id="looks"></div>
+    <p class="foot" style="text-align:left">Elke dag krijg je een andere look. Het weer bepaalt hoe dik, jij bepaalt hoe het eruitziet.</p>
+  </div>
 
-<div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="sheetT">
-  <div class="in">
-    <div class="row"><h2 class="h sec" id="sheetT">Instellingen</h2><button class="pill" id="sheetX">Klaar</button></div>
-    <p class="lab">Waar ben je</p>
-    <label class="lab" for="q" style="position:absolute;left:-9999px">Zoek een plaats</label>
+  <div class="view" id="v-jij" hidden>
+    <div class="sech"><h2 class="an">Jij</h2><p class="mo">instellingen</p></div>
+    <p class="mo">Waar ben je</p>
+    <label class="mo" for="q" style="position:absolute;left:-9999px">Zoek een plaats</label>
     <input class="field" id="q" type="search" placeholder="Zoek een plaats" autocomplete="off" enterkeyhint="search">
     <div class="res" id="res"></div>
     <button class="btn alt" id="geo">Gebruik mijn locatie</button>
-    <p class="lab">Jouw poppetje</p>
+    <p class="mo">Jouw poppetje</p>
     <div class="heads" id="heads"></div>
-    <p class="lab">Jouw stijl</p>
-    <div class="chips" id="styles"></div>
-    <p class="lab">Hoe lang ben je buiten</p>
+    <p class="mo">Hoe lang ben je buiten</p>
     <div class="chips" id="dur"></div>
-    <p class="lab">Jij</p>
+    <p class="mo">Jij</p>
     <div class="chips" id="coldc"></div>
-    <p class="foot" style="text-align:left;margin-top:-6px">Nu gratis in de beta. Later hoort dit bij Pro.</p>
+    <p class="foot" style="text-align:left">Nu gratis in de beta. Later hoort dit bij Pro.</p>
   </div>
 </div>
 
+<nav class="nav mo" id="nav" aria-label="Hoofdmenu">
+  <button data-v="today" aria-current="page">Vandaag</button><button data-v="week">Week</button><button data-v="kast">Kast</button><button data-v="jij">Jij</button>
+</nav>
+
 <div class="sheet" id="storySheet" role="dialog" aria-modal="true" aria-labelledby="storyT">
   <div class="in">
-    <div class="row"><h2 class="h sec" id="storyT">Je story</h2><button class="pill" id="storyX">Sluit</button></div>
+    <div class="row"><h2 class="an sec" id="storyT">Je story</h2><button class="pill mo" id="storyX">Sluit</button></div>
     <img class="storyimg" id="storyImg" alt="Je story-plaatje met poppetje, datum, temperatuur en plaats">
     <button class="btn" id="shareBtn">Deel</button>
     <p class="foot" id="storyHint">Lukt delen niet? Houd het plaatje ingedrukt en kies Bewaar.</p>
@@ -422,7 +451,7 @@ const DEMO=(()=>{ // een wisselvallige novemberdag
   return t.map((x,i)=>({h:7+i,t:x,feel:f[i],pp:pp[i],pr:pp[i]>=50?1.2:0,wind:w[i],hum:78,code:pp[i]>=50?61:i<6?3:2}));
 })();
 async function fetchWeather(p){
-  const u=`https://api.open-meteo.com/v1/forecast?latitude=${p.lat}&longitude=${p.lon}&hourly=temperature_2m,apparent_temperature,precipitation_probability,precipitation,wind_speed_10m,relative_humidity_2m,weather_code&timezone=auto&forecast_days=2`;
+  const u=`https://api.open-meteo.com/v1/forecast?latitude=${p.lat}&longitude=${p.lon}&hourly=temperature_2m,apparent_temperature,precipitation_probability,precipitation,wind_speed_10m,relative_humidity_2m,weather_code&timezone=auto&forecast_days=7`;
   const r=await fetch(u); if(!r.ok) throw new Error('weer '+r.status);
   return r.json();
 }
@@ -537,8 +566,23 @@ const ic={
 const wxIcon=x=>x.pp>=50?(x.t<=1?ic.snow:ic.rain):x.code<=1?ic.sun:ic.cloud;
 
 /* ---------- state ---------- */
+/* looks: elke dag een andere outfit binnen dezelfde stijl. Het weer bepaalt de dikte, de look alleen kleur en model. */
+const LOOKS={
+  casual:[{},
+    {trui:['knit','#7A2E35','Gebreide trui'],broek:['wide','#6B4A38','Wijde broek'],dik:['puffer','#C9965A','korte puffer'],herfst:['teddy','#E8DCC6','teddy jas'],winter:['coat','#5E7696','lange wollen jas'],sjaal:'#5F7D5F',muts:'#C9965A'},
+    {trui:['vest','#C9965A','Vest'],broek:['straight','#3F4A5A','Donkere jeans'],dun:['denim','#8A8F5A','overshirt'],dik:['puffer','#7A2E35','korte puffer'],herfst:['coat','#8A8F5A','wollen jas'],winter:['longpuffer','#3F4A5A','lange puffer'],sjaal:'#E8DCC6',muts:'#5E7696'}],
+  classic:[{},
+    {trui:['vest','#5F7D5F','Vest'],broek:['straight','#3F4A5A','Donkere jeans'],herfst:['bomber','#6B4A38','leren bomber'],dik:['puffer','#8A8F5A','korte puffer'],winter:['longpuffer','#7A2E35','lange puffer'],sjaal:'#C9965A',muts:'#7A2E35'},
+    {trui:['knit','#E8DCC6','Gebreide trui'],broek:['wide','#8A8F5A','Wijde pantalon'],herfst:['coat','#7A2E35','wollen jas'],dik:['puffer','#7A5A44','korte puffer'],winter:['coat','#3F4A5A','lange wollen jas'],sjaal:'#C2643A',muts:'#C9965A'}],
+  comfy:[{},
+    {trui:['hoodie','#C9965A','Hoodie'],broek:['baggy','#B9B4AC','Baggy jeans'],herfst:['bomber','#5F7D5F','bomber'],dik:['puffer','#7A2E35','korte puffer'],winter:['longpuffer','#7A5A44','lange puffer'],sjaal:'#E8DCC6',muts:'#5F7D5F'},
+    {trui:['knit','#5E7696','Gebreide trui'],broek:['wide','#7A5A44','Wijde broek'],herfst:['teddy','#C9965A','teddy jas'],dik:['puffer','#8A8F5A','korte puffer'],winter:['coat','#6B4A38','lange wollen jas'],sjaal:'#7A2E35',muts:'#E8DCC6'}]
+};
 const S={place:store.get('place',{name:'Utrecht',lat:52.09,lon:5.12}),char:store.get('char','a'),style:store.get('style','casual'),temp:store.get('temp',store.get('cold',false)?'koud':''),dur:store.get('dur','kort'),hours:DEMO,plan:null,hour:12,tomorrow:false,date:new Date().toISOString().slice(0,10),demo:false,line:''};
-const ch=()=>CHARS.find(c=>c.id===S.char)||CHARS[0], sty=()=>STYLES[S.style]||STYLES.casual;
+const ch=()=>CHARS.find(c=>c.id===S.char)||CHARS[0], styN=n=>({...(STYLES[S.style]||STYLES.casual),...((LOOKS[S.style]||[])[n]||{})}), sty=()=>styN(look());
+const dayN=()=>Math.floor(new Date(S.date+'T12:00:00').getTime()/864e5);
+const look=()=>{ const sh=store.get('shuffle',{d:'',n:0}); return ((dayN()+(sh.d===S.date?sh.n:0))%3+3)%3; };
+const setLook=n=>store.set('shuffle',{d:S.date,n:((n-dayN())%3+3)%3});
 const idx=()=>Math.max(0,S.hours.findIndex(x=>x.h===S.hour));
 
 function renderStage(mode){
@@ -550,7 +594,8 @@ function renderStage(mode){
   if(wet){ const snow=x.t<=1; w+=`<g class="fall"${snow?' style="animation-duration:2.2s"':''}>`; for(let k=0;k<14;k++){ const px=(k*61)%400, py=(k*97)%380; w+=snow?`<circle cx="${px}" cy="${py}" r="5" fill="#FFFBF3" stroke="${INK}" stroke-width="2"/>`:`<path d="M${px} ${py} l-7 20" stroke="#6E86A6" stroke-width="5" stroke-linecap="round"/>`; } }
   if(wet) w+='</g>';
   $('wx').innerHTML=w;
-  $('side').innerHTML=advice(i).map(r=>r.skip?`<p class="skip">${esc(r.skip)}</p>`:`<div class="rowi${r.big?' big':''}${r.off?' off':''}" data-k="${r.k||''}">${r.icon}<div style="min-width:0"><p class="n">${r.nr?`<span class="nr">${r.nr}</span>`:''}${esc(r.name)}</p>${r.note?`<p class="s">${esc(r.note)}</p>`:''}</div></div>`).join('');
+  $('lookLab').textContent='Look '+(look()+1)+' van 3';
+  $('side').innerHTML=advice(i).map(r=>r.skip?`<p class="skip">${esc(r.skip)}</p>`:`<div class="rowi${r.big?' big':''}${r.off?' off':''}" data-k="${r.k||''}"><span class="mo">${r.nr?String(r.nr).padStart(2,'0'):'+'}</span>${r.icon}<div style="min-width:0"><p class="n">${esc(r.name)}</p>${r.note?`<p class="s">${esc(r.note)}</p>`:''}</div></div>`).join('');
   litT.forEach(clearTimeout); litT=[];
   for(const q of dressSeq) litT.push(setTimeout(()=>{ document.querySelectorAll(`#side [data-k="${q.k}"]`).forEach(r=>{ r.classList.remove('lit'); void r.offsetWidth; r.classList.add('lit'); }); },q.d*1000+150));
 }
@@ -602,38 +647,68 @@ function advice(i){
   return rows;
 }
 function renderTimeline(){
-  const st=S.plan.st, col={dicht:'#7A2E35',open:'#C9965A',uit:'#8A8F5A'}; let html='', run=1;
-  for(let i=1;i<=st.length;i++){ if(i<st.length&&st[i].jasState===st[i-1].jasState&&st[i].trui===st[i-1].trui) run++; else { const s=st[i-1]; html+=`<i style="flex:${run} 1 0;background:${S.plan.jas?col[s.jasState]:'#8A8F5A'};${s.trui?'':'background-image:repeating-linear-gradient(135deg,rgba(255,251,243,.55) 0 6px,transparent 6px 12px)'}"></i>`; run=1; } }
+  const st=S.plan.st, col={dicht:'#6E1F2B',open:'#E0662F',uit:'#A5AA6C'}; let html='', run=1;
+  for(let i=1;i<=st.length;i++){ if(i<st.length&&st[i].jasState===st[i-1].jasState) run++; else { const s=st[i-1]; html+=`<i style="flex:${run} 1 0;background:${S.plan.jas?col[s.jasState]:'#A5AA6C'}"></i>`; run=1; } }
   $('bar').innerHTML=html;
   $('moms').innerHTML=S.plan.moms.length>1?S.plan.moms.map(m=>`<button class="mom" data-h="${m.h}"><span class="dot" style="background:${col[S.plan.st[S.hours.findIndex(x=>x.h===m.h)].jasState]}"></span><b>${m.h}:00</b><span>${esc(m.txt)}</span></button>`).join(''):`<p class="mom"><span>Geen gedoe vandaag. Wat je aantrekt, hou je aan.</span></p>`;
 }
+const CARE={fiets:'<circle cx="14" cy="30" r="8"/><circle cx="34" cy="30" r="8"/><path d="M14 30 l8 -14 h8 l4 14 M22 16 l8 14 M18 12 h7 M28 12 h6"/>',
+  par:'<path d="M24 8 q-17 2 -17 17 h34 q0 -15 -17 -17z M24 25 v10 q0 5 -5 5"/>',
+  glove:'<path d="M14 24 q0 -16 9 -16 q9 0 9 16 v3 q6 -6 9 -2 q2 3 -6 10 v6 h-21z M14 35 h21"/>',
+  muts:'<path d="M8 30 q0 -22 16 -22 q16 0 16 22z M5 30 h38 v9 h-38z M16 30 v9 M24 30 v9 M32 30 v9"/>'};
+const careSym=(k,off,a,b)=>`<div class="sym"><i><svg viewBox="0 0 48 48" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round">${CARE[k]}${off?'<path d="M6 42 L42 6" stroke-width="3.4"/>':''}</g></svg></i><p class="mo">${a}<br>${b}</p></div>`;
 function renderHour(){
-  const i=idx(), x=S.hours[i];
+  const i=idx(), x=S.hours[i], pl=S.plan;
   const n=S.hours.length-1; $('thumb').style.left=(i/n*100)+'%'; $('thumb').textContent=x.h; $('scrub').value=x.h;
   $('tlTime').textContent=x.h+':00';
+  const d=new Date(S.date+'T12:00:00');
+  $('meta').textContent=(S.tomorrow?'Morgen':'Vandaag')+' · '+d.toLocaleDateString('nl-NL',{weekday:'short',day:'numeric',month:'short'})+' · '+x.h+':00';
+  $('heroT').textContent=Math.round(x.t)+'°'; $('heroF').textContent=Math.round(x.feel)+'°'; $('heroW').textContent='Wind '+Math.round(x.wind)+' km/u';
   const wl=x.wind<12?0:x.wind<25?1:x.wind<40?2:3;
-  $('scen').innerHTML=`<div class="sc" style="background:var(--cream)">${ic.feel(x.feel)}<p class="lab">Gevoel</p><p class="t">${gevoel(x.feel)}</p><p class="num">${x.wind>=15&&x.t-x.feel>=2?`${Math.round(x.t)}°, door de wind ${Math.round(x.feel)}°`:`voelt als ${Math.round(x.feel)}°`}</p></div>
-  <div class="sc" style="background:var(--blue)">${ic.drop(Math.round(x.pp/5)*5)}<p class="lab">Regen</p><p class="t">${regenT(x.pp)}</p><p class="num">kans ${Math.round(x.pp)}%</p></div>
-  <div class="sc" style="background:var(--olive)">${ic.wind(wl)}<p class="lab">Wind</p><p class="t">${windT(x.wind)}</p><p class="num">${Math.round(x.wind)} km/u</p></div>`;
-  const f=fiets(x), hr=haar(x);
-  $('minis').innerHTML=`<div class="card mini" style="background:var(--pink)"><p class="lab">Fietscijfer</p><p class="h big">${f.s}</p><div class="meter" aria-hidden="true">${[2,4,6,8,10].map(v=>`<i class="${f.s>=v?'on':''}"></i>`).join('')}</div><p class="t">${f.t}</p><p class="tip">${f.tip}</p></div>
-  <div class="card mini" style="background:var(--sand)"><p class="lab">Haar-alarm</p><p class="h big" style="font-size:26px;line-height:1.1;min-height:44px;display:flex;align-items:center">${hr.t[hr.l]}</p><div class="meter" aria-hidden="true">${[1,2,3].map(v=>`<i class="${hr.l>=v?'on':''}"></i>`).join('')}</div><p class="t">${hr.tip[hr.l]}</p></div>`;
+  $('scen').innerHTML=`<div class="sc">${ic.feel(x.feel)}<p class="mo">Gevoel</p><p class="t">${gevoel(x.feel)}</p><p class="num">${x.wind>=15&&x.t-x.feel>=2?`${Math.round(x.t)}°, door de wind ${Math.round(x.feel)}°`:`voelt als ${Math.round(x.feel)}°`}</p></div>
+  <div class="sc">${ic.drop(Math.round(x.pp/5)*5)}<p class="mo">Regen</p><p class="t">${regenT(x.pp)}</p><p class="num">kans ${Math.round(x.pp)}%</p></div>
+  <div class="sc">${ic.wind(wl)}<p class="mo">Wind</p><p class="t">${windT(x.wind)}</p><p class="num">${Math.round(x.wind)} km/u</p></div>`;
+  const f=fiets(x), hr=haar(x), gl=pl.gloves||x.feel<8;
+  $('minis').innerHTML=`<div class="row"><h2 class="an">Etiket van de dag</h2><p class="mo">${x.h}:00</p></div><div class="g4">
+  ${careSym('fiets',f.s<4,'Fiets: '+f.s,f.t.toLowerCase())}
+  ${careSym('glove',!gl,'Handschoenen',pl.gloves?'aan':gl?'alleen op de fiets':'blijven thuis')}
+  ${careSym('par',!pl.umbrella,'Paraplu',pl.umbrella?'mee om '+pl.firstWet.h+':00':pl.wet>0?'klapt om':'blijft thuis')}
+  ${careSym('muts',hr.l===0,'Haar',['blijft zitten','pet of muts','zet het vast','muts of capuchon'][hr.l])}
+  </div><div class="tips"><p><b>Fiets.</b> ${f.tip}</p><p><b>Haar.</b> ${hr.tip[hr.l]}</p></div>`;
+  renderParts();
 }
 function renderParts(){
   const parts=[['Ochtend',7,11],['Middag',12,17],['Avond',18,22]];
-  $('parts').innerHTML=parts.map(([n,a,b])=>{ const hs=S.hours.filter(x=>x.h>=a&&x.h<=b); if(!hs.length) return ''; const f=hs.reduce((s,x)=>s+x.feel,0)/hs.length, pp=Math.max(...hs.map(x=>x.pp)); const mid=hs[Math.floor(hs.length/2)], s=S.plan.st[S.hours.indexOf(mid)];
+  $('parts').innerHTML=parts.map(([n,a,b])=>{ const hs=S.hours.filter(x=>x.h>=a&&x.h<=b); if(!hs.length) return ''; const f=hs.reduce((s,x)=>s+x.t,0)/hs.length; const mid=hs[Math.floor(hs.length/2)], s=S.plan.st[S.hours.indexOf(mid)];
     const o=[]; if(S.plan.jas) o.push(s.jasState==='uit'?'jas uit':'jas '+s.jasState); else o.push(s.trui?truiNaam(sty(),S.plan.dikT).toLowerCase():'T-shirt'); if(s.sjaal) o.push('sjaal');
-    return `<div class="part">${wxIcon({...mid,pp})}<p class="lab">${n}</p><p class="h" style="font-size:20px">${Math.round(f)}°</p><p class="t">${o.join(', ')}</p></div>`; }).join('');
+    return `<button class="tile" data-h="${mid.h}" aria-pressed="${S.hour>=a&&S.hour<=b}"><span class="mo">${n}</span><span class="an t">${Math.round(f)}°</span><span class="d">${o.join(', ')}</span></button>`; }).join('');
 }
+function renderWeek(){
+  if(!S.raw){ $('week').innerHTML='<p class="note">Geen verbinding met het weerbericht. De week komt terug zodra er weer verbinding is.</p>'; return; }
+  const H=S.raw.hourly, by={};
+  H.time.forEach((ts,i)=>{ const d=ts.slice(0,10), h=+ts.slice(11,13); if(h<7||h>22) return;
+    (by[d]=by[d]||[]).push({h,t:H.temperature_2m[i],feel:H.apparent_temperature[i],pp:H.precipitation_probability[i]??0,pr:H.precipitation[i]??0,wind:H.wind_speed_10m[i],hum:H.relative_humidity_2m[i]??70,code:H.weather_code[i]??2}); });
+  const st=sty();
+  $('week').innerHTML=Object.entries(by).filter(([d,hs])=>hs.length>=10&&d>=S.date).map(([d,hs],k)=>{ const pl=plan(hs), dt=new Date(d+'T12:00:00');
+    const icon=pl.jas?pieceSVG('30 138 140 196',()=>gJas(st,pl.jas,false)):pieceSVG('30 140 140 140',()=>gShirt(st,ch(),'bare'));
+    const ex=[]; if(pl.st.some(x=>x.sjaal)) ex.push('sjaal'); if(pl.gloves) ex.push('handschoenen'); if(pl.umbrella) ex.push('paraplu');
+    return `<div class="wk"><div class="d"><span class="mo">${k===0?(S.tomorrow?'morgen':'vandaag'):dt.toLocaleDateString('nl-NL',{weekday:'short'})}</span><b>${dt.getDate()}</b></div>${icon}<div style="min-width:0"><p class="n">${pl.jas?JASNAAM[pl.jas]+(pl.jas==='regen'?'':', '+st[pl.jas][2]):pl.hasTrui?'Geen jas, wel een trui':'Geen jas'}</p><p class="s">Voelt als ${Math.round(pl.rMin)}° tot ${Math.round(pl.rMax)}°. ${pl.firstWet?'Regen vanaf '+pl.firstWet.h+':00.':'Droog.'}${ex.length?' Mee: '+ex.join(', ')+'.':''}</p></div></div>`; }).join('');
+}
+let VIEW='today';
+function show(v){ VIEW=v; for(const k of ['today','week','kast','jij']) $('v-'+k).hidden=k!==v;
+  document.querySelectorAll('#nav button').forEach(b=>{ if(b.dataset.v===v) b.setAttribute('aria-current','page'); else b.removeAttribute('aria-current'); });
+  if(v==='week') renderWeek(); if(v==='kast'||v==='jij') renderSettings();
+  window.scrollTo(0,0); track('tab-'+v,1); }
 function renderAll(mode){
   S.plan=plan(S.hours);
   if(!S.hours.some(x=>x.h===S.hour)) S.hour=S.hours[0].h;
   S.line=verdict(S.hours,S.plan,S.date);
-  $('meta').textContent=S.place.name+' · '+(S.tomorrow?'morgen':'vandaag');
+  $('placeBtn').textContent=S.place.name+' · wijzig';
   const v=$('verdict'); v.textContent=S.line; v.style.animation='none'; void v.offsetWidth; v.style.animation='';
   $('demoNote').hidden=!S.demo;
   $('scrub').min=S.hours[0].h; $('scrub').max=S.hours[S.hours.length-1].h;
-  renderStage(mode); renderTimeline(); renderHour(); renderParts(); renderFb();
+  renderStage(mode); renderTimeline(); renderHour(); renderFb();
+  if(VIEW==='week') renderWeek();
 }
 async function load(){
   const cached=store.get('wx',null);
@@ -644,21 +719,25 @@ async function load(){
   $('fig').style.visibility='';
   renderAll('dress');
 }
-function applyData(j){ const d=pickDay(j); if(d.hours.length<6) throw new Error('te weinig uren'); S.hours=d.hours; S.tomorrow=d.tomorrow; S.date=d.date; S.live=true; }
+function applyData(j){ const d=pickDay(j); if(d.hours.length<6) throw new Error('te weinig uren'); S.hours=d.hours; S.tomorrow=d.tomorrow; S.date=d.date; S.live=true; S.raw=j; }
 
 /* ---------- interactie ---------- */
 $('scrub').addEventListener('input',e=>{ track('schuifbalk',1); S.hour=+e.target.value; renderStage('diff'); renderHour(); });
+$('parts').addEventListener('click',e=>{ const b=e.target.closest('[data-h]'); if(!b) return; track('dagdeel-tik',1); S.hour=+b.dataset.h; renderStage('diff'); renderHour(); });
+$('shuffle').addEventListener('click',()=>{ track('andere-outfit'); setLook((look()+1)%3); renderAll('dress'); });
+$('nav').addEventListener('click',e=>{ const b=e.target.closest('[data-v]'); if(b) show(b.dataset.v); });
+$('looks').addEventListener('click',e=>{ const b=e.target.closest('[data-l]'); if(!b) return; track('look-'+b.dataset.l); setLook(+b.dataset.l); renderAll('dress'); renderSettings(); });
 $('moms').addEventListener('click',e=>{ const b=e.target.closest('[data-h]'); if(!b) return; track('moment-tik',1); S.hour=+b.dataset.h; renderStage('diff'); renderHour(); });
 $('retry').addEventListener('click',()=>{ track('opnieuw-tik'); load(); });
 function openSheet(id){ $(id).classList.add('on'); const f=$(id).querySelector('button'); if(f) f.focus(); }
 function closeSheet(id){ $(id).classList.remove('on'); }
-document.addEventListener('keydown',e=>{ if(e.key==='Escape'){ closeSheet('sheet'); closeSheet('storySheet'); } });
-for(const id of ['sheet','storySheet']) $(id).addEventListener('click',e=>{ if(e.target===$(id)) closeSheet(id); });
-$('placeBtn').addEventListener('click',()=>{ track('instellen-open',1); renderSettings(); openSheet('sheet'); });
-$('sheetX').addEventListener('click',()=>closeSheet('sheet'));
+document.addEventListener('keydown',e=>{ if(e.key==='Escape') closeSheet('storySheet'); });
+for(const id of ['storySheet']) $(id).addEventListener('click',e=>{ if(e.target===$(id)) closeSheet(id); });
+$('placeBtn').addEventListener('click',()=>{ track('instellen-open',1); show('jij'); });
 function renderSettings(){
   $('heads').innerHTML=CHARS.map(c=>{ SIL=false; return `<button data-c="${c.id}" aria-pressed="${c.id===S.char}" aria-label="Poppetje ${c.id.toUpperCase()}"><svg viewBox="30 6 140 140" aria-hidden="true"><g stroke-linejoin="round" stroke-linecap="round">${hairBack(c,false)}${head(c)}</g></svg></button>`; }).join('');
   $('styles').innerHTML=Object.entries(STYLES).map(([k,v])=>`<button class="chip" data-s="${k}" aria-pressed="${k===S.style}">${v.label}</button>`).join('');
+  $('looks').innerHTML=[0,1,2].map(n=>`<button class="look" data-l="${n}" aria-pressed="${n===look()}" aria-label="Look ${n+1}"><svg viewBox="0 0 200 400" aria-hidden="true">${figureInner(ch(),styN(n),S.plan.st[idx()],'none')}</svg><span class="mo">Look ${n+1}</span></button>`).join('');
   $('q').placeholder='Nu: '+S.place.name+'. Zoek een andere plaats';
   $('dur').innerHTML=[['kort','Even weg'],['lang','Lang buiten']].map(([k,l])=>`<button class="chip" data-d="${k}" aria-pressed="${k===S.dur}">${l}</button>`).join('');
   $('coldc').innerHTML=[['koud','Ik heb het snel koud'],['warm','Ik heb het snel warm']].map(([k,l])=>`<button class="chip" data-t="${k}" aria-pressed="${S.temp===k}">${l}</button>`).join('');
@@ -678,7 +757,7 @@ $('q').addEventListener('input',e=>{ clearTimeout(qT); const q=e.target.value.tr
   try{ const r=await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(q)}&count=5&language=nl`); const j=await r.json();
     $('res').innerHTML=(j.results||[]).map(p=>`<button data-lat="${p.latitude}" data-lon="${p.longitude}" data-n="${esc(p.name)}">${esc(p.name)}${p.admin1?', '+esc(p.admin1):''}${p.country_code&&p.country_code!=='NL'?' ('+esc(p.country_code)+')':''}</button>`).join('')||'<p class="foot">Niks gevonden.</p>';
   }catch(err){ $('res').innerHTML='<p class="foot">Zoeken lukt nu niet. Probeer het later.</p>'; } },300); });
-function setPlace(p){ track('plaats-gewijzigd'); S.place=p; store.set('place',p); S.live=false; $('res').innerHTML=''; $('q').value=''; closeSheet('sheet'); load(); }
+function setPlace(p){ track('plaats-gewijzigd'); S.place=p; store.set('place',p); S.live=false; $('res').innerHTML=''; $('q').value=''; show('today'); load(); }
 $('res').addEventListener('click',e=>{ const b=e.target.closest('[data-lat]'); if(b) setPlace({name:b.dataset.n,lat:+(+b.dataset.lat).toFixed(2),lon:+(+b.dataset.lon).toFixed(2)}); });
 $('geo').addEventListener('click',()=>{ track('locatie-knop'); if(!navigator.geolocation){ $('res').innerHTML='<p class="foot">Je browser geeft geen locatie door.</p>'; return; }
   navigator.geolocation.getCurrentPosition(async pos=>{ const lat=+pos.coords.latitude.toFixed(2), lon=+pos.coords.longitude.toFixed(2); setPlace({name:'Hier',lat,lon}); },
@@ -689,7 +768,7 @@ let storyBlob=null;
 async function makeStory(){
   const W=1080,H=1920, i=idx(), x=S.hours[i], s=S.plan.st[i], wet=x.pp>=50;
   const bg=wet?'#CBD5DA':x.feel<6?'#E9D9BF':x.feel<16?'#EBCFC6':'#DADDC3';
-  try{ await Promise.all([document.fonts.load('96px "Bagel Fat One"'),document.fonts.load('700 44px Figtree')]); }catch(e){}
+  try{ await Promise.all([document.fonts.load('96px Anton'),document.fonts.load('700 44px "Inter Tight"')]); }catch(e){}
   const c=document.createElement('canvas'); c.width=W; c.height=H; const g=c.getContext('2d');
   g.fillStyle=bg; g.fillRect(0,0,W,H);
   g.strokeStyle='rgba(255,251,243,.55)'; g.lineWidth=44; g.lineCap='round';
@@ -703,19 +782,19 @@ async function makeStory(){
   const box=(bx,by,bw,bh,r,fill)=>{ g.fillStyle=INK; rr(bx+10,by+10,bw,bh,r); g.fill(); g.fillStyle=fill; rr(bx,by,bw,bh,r); g.fill(); g.lineWidth=7; g.strokeStyle=INK; g.stroke(); };
   function rr(x0,y0,w,h,r){ g.beginPath(); g.moveTo(x0+r,y0); g.arcTo(x0+w,y0,x0+w,y0+h,r); g.arcTo(x0+w,y0+h,x0,y0+h,r); g.arcTo(x0,y0+h,x0,y0,r); g.arcTo(x0,y0,x0+w,y0,r); g.closePath(); }
   // zin van de dag
-  g.font='700 54px Figtree, sans-serif'; const words=S.line.split(' '); const lines=[]; let cur='';
+  g.font='700 54px "Inter Tight", sans-serif'; const words=S.line.split(' '); const lines=[]; let cur='';
   for(const w of words){ const t=cur?cur+' '+w:w; if(g.measureText(t).width>840&&cur){ lines.push(cur); cur=w; } else cur=t; } lines.push(cur);
   const bh=70+lines.length*68; box(70,150,940,bh,48,CREAM);
   g.fillStyle=INK; g.textBaseline='top'; lines.forEach((l,k)=>g.fillText(l,120,188+k*68));
   // temperatuur en plaats
   const d=new Date(S.date+'T12:00:00'); const datum=d.toLocaleDateString('nl-NL',{weekday:'long',day:'numeric',month:'long'});
-  box(70,1500,430,250,48,'#7A2E35'); g.fillStyle=CREAM; g.font='190px "Bagel Fat One", sans-serif'; g.fillText(Math.round(x.t)+'°',110,1520);
-  box(540,1500,470,250,48,CREAM); g.fillStyle=INK; g.font='74px "Bagel Fat One", sans-serif'; let pn=S.place.name; while(g.measureText(pn).width>400&&pn.length>3) pn=pn.slice(0,-2); g.fillText(pn,580,1532);
-  const fit=(t,y)=>{ let fs=40; do{ g.font='700 '+fs+'px Figtree, sans-serif'; fs-=2; }while(g.measureText(t).width>400&&fs>22); g.fillText(t,580,y); };
+  box(70,1500,430,250,48,'#7A2E35'); g.fillStyle=CREAM; g.font='190px Anton, sans-serif'; g.fillText(Math.round(x.t)+'°',110,1520);
+  box(540,1500,470,250,48,CREAM); g.fillStyle=INK; g.font='74px Anton, sans-serif'; let pn=S.place.name; while(g.measureText(pn).width>400&&pn.length>3) pn=pn.slice(0,-2); g.fillText(pn,580,1532);
+  const fit=(t,y)=>{ let fs=40; do{ g.font='700 '+fs+'px "Inter Tight", sans-serif'; fs-=2; }while(g.measureText(t).width>400&&fs>22); g.fillText(t,580,y); };
   fit(datum,1632); fit(x.h+':00 · voelt als '+Math.round(x.feel)+'°',1684);
   // logo en link
-  g.font='64px "Bagel Fat One", sans-serif'; g.fillStyle=INK; g.fillText('Kleerweer',70,1800);
-  g.font='700 36px Figtree, sans-serif'; const link=(location.protocol.startsWith('http')&&!/localhost|127\.0|claude/.test(location.host))?location.host+location.pathname.replace(/\/(index\.html)?$/,''):'kleerweer'; g.textAlign='right'; g.fillText(link,1010,1822); g.textAlign='left';
+  g.font='64px Anton, sans-serif'; g.fillStyle=INK; g.fillText('Kleerweer',70,1800);
+  g.font='700 36px "Inter Tight", sans-serif'; const link=(location.protocol.startsWith('http')&&!/localhost|127\.0|claude/.test(location.host))?location.host+location.pathname.replace(/\/(index\.html)?$/,''):'kleerweer'; g.textAlign='right'; g.fillText(link,1010,1822); g.textAlign='left';
   return new Promise(ok=>c.toBlob(b=>ok({blob:b,data:c.toDataURL('image/png')}),'image/png'));
 }
 $('storyBtn').addEventListener('click',async()=>{ const b=$('storyBtn'); b.disabled=true; b.textContent='Even tekenen';
